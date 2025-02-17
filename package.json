@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "eslint-utils": "^3.0.0",
-    "jsdom": "^25.0.0",
+    "jsdom": "^26.0.0",
     "tsutils": "^3.21.0"
   },
   "peerDependencies": {
@@ -43,8 +43,8 @@
     "@types/estree": "^1.0.1",
     "@types/jest": "^29.5.2",
     "@types/jsdom": "^21.1.6",
-    "@types/node": "^20.10.5",
-    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@types/node": "^22.13.4",
+    "@rollup/plugin-node-resolve": "^16.0.0",
     "@typescript-eslint/eslint-plugin": "^7.0.0 || ^8.5.0",
     "@typescript-eslint/parser": "^7.0.0 || ^8.5.0",
     "eslint": "^9.10.0",
