@@ -9,7 +9,7 @@ No config is needed
 ## Usage
 
 ```json
-{ "@stencil/strict-mutable": "error" }
+{ "stencil/strict-mutable": "error" }
 ```
 
 > Fix included

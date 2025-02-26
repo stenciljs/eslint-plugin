@@ -9,5 +9,5 @@ No config is needed
 ## Usage
 
 ```json
-{ "@stencil/decorators-context": "error" }
+{ "stencil/decorators-context": "error" }
 ```

@@ -9,7 +9,7 @@ No config is needed
 ## Usage
 
 ```json
-{ "@stencil/own-methods-must-be-private": "error" }
+{ "stencil/own-methods-must-be-private": "error" }
 ```
 
 > Fix included

@@ -9,5 +9,5 @@ No config is needed
 ## Usage
 
 ```json
-{ "@stencil/required-jsdoc": "error" }
+{ "stencil/required-jsdoc": "error" }
 ```

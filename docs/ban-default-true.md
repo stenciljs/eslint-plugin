@@ -9,7 +9,7 @@ No config is needed
 ## Usage
 
 ```json
-{ "@stencil/ban-default-true": "error" }
+{ "stencil/ban-default-true": "error" }
 ```
 
 

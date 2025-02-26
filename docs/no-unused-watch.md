@@ -9,5 +9,5 @@ No config is needed
 ## Usage
 
 ```json
-{ "@stencil/no-unused-watch": "error" }
+{ "stencil/no-unused-watch": "error" }
 ```
