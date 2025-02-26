@@ -12,6 +12,54 @@ npm i --save-dev @stencil/eslint-plugin
 
 ## Usage
 
+### Configuration (new: eslint.config.*)
+
+The plugin exports 3 flat configs for use with eslint >= 9:
+
+- flat.base
+- flat.recommended
+- flat.strict
+
+```js
+// eslint.config.mjs
+import stencilLint from '@stencil/eslint-plugin';
+
+export default [
+  ...
+  stencilLint.configs.flat.recommended,
+  ...
+];
+```
+
+Alternatively:
+
+```js
+// eslint.config.js
+const stencilLint = require('@stencil/eslint-plugin');
+
+module.exports = [
+  ...
+  stencilLint.configs.flat.recommended,
+  ...
+];
+```
+
+By default, ESLint will ignore your `node_modules/` directory. Consider adding a `.eslintignore` file at the root of
+your project with any output target directories to avoid false positive errors from ESLint.
+
+```
+# place any directories created by the Stencil compilation process here
+dist
+loader
+www
+```
+
+Lint all your project:
+
+```sh
+npm run lint
+```
+
 ### Configuration (legacy: .eslintrc*)
 
 `.eslintrc.json` configuration file:
@@ -25,54 +73,6 @@ npm i --save-dev @stencil/eslint-plugin
     "plugin:@stencil/recommended"
   ]
 }
-```
-
-### Configuration (new: eslint.config.*)
-
-The plugin exports 3 flat configs for use with eslint >= 9:
-
-- flat.base
-- flat.recommended
-- flat.strict
-
-
-```js
-// eslint.config.js
-const stencilLint = require('@stencil/eslint-plugin');
-
-module.exports = [
-  ...
-  stencilLint.configs.flat.recommended,
-  ...
-];
-```
-
-Alternatively:
-
-```js
-// eslint.config.mjs
-import stencilLint from '@stencil/eslint-plugin';
-
-export default [
-  ...
-  stencilLint.configs.flat.recommended,
-  ...
-];
-```
-
-
-By default, ESLint will ignore your `node_modules/` directory. Consider adding a `.eslintignore` file at the root of
-your project with any output target directories to avoid false positive errors from ESLint.
-```
-# place any directories created by the Stencil compilation process here
-dist
-loader
-www
-```
-
-Lint all your project:
-```
-npm run lint
 ```
 
 ## Supported Rules

@@ -7,7 +7,7 @@
 // Rule Definition
 //------------------------------------------------------------------------------
 import ts from 'typescript';
-import { Rule } from 'eslint';
+import type { Rule } from 'eslint';
 import { stencilComponentContext } from '../utils';
 
 const rule: Rule.RuleModule = {

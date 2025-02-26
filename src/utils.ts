@@ -1,5 +1,4 @@
 import ts from 'typescript';
-// @ts-ignore
 import { getStaticValue } from 'eslint-utils';
 
 const SyntaxKind = ts.SyntaxKind;
