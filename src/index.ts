@@ -14,7 +14,7 @@ const plugin = {
 };
 
 const flatBase = {
-  plugins: { '@stencil-community': plugin },
+  plugins: { '@stencil': plugin },
   rules: configs.base.overrides[0].rules,
   languageOptions: { parserOptions: configs.base.overrides[0].parserOptions },
 }
@@ -22,7 +22,7 @@ const flatBase = {
 const flatRecommended = {
   plugins: { 
     react: react, 
-    '@stencil-community': plugin 
+    '@stencil': plugin 
   },
   rules: configs.recommended.rules,
   languageOptions: { parserOptions: configs.base.overrides[0].parserOptions },
@@ -31,7 +31,7 @@ const flatRecommended = {
 const flatStrict = {
   plugins: { 
     react: react, 
-    '@stencil-community': plugin 
+    '@stencil': plugin 
   },
   rules: configs.strict.rules,
   languageOptions: { parserOptions: configs.base.overrides[0].parserOptions },

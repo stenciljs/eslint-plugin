@@ -1,5 +1,5 @@
 {
-  "name": "@stencil-community/eslint-plugin",
+  "name": "@stencil/eslint-plugin",
   "version": "0.10.0",
   "description": "ESLint rules specific to Stencil JS projects.",
   "keywords": [
@@ -61,7 +61,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/stencil-community/stencil-eslint.git"
+    "url": "git+https://github.com/stenciljs/eslint-plugin.git"
   },
   "license": "MIT"
 }

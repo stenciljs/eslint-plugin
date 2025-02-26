@@ -3,11 +3,11 @@ export default {
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:@stencil-community/recommended",
+    "plugin:@stencil/recommended",
   ],
   rules: {
-    '@stencil-community/ban-default-true': 2,
-    '@stencil-community/strict-boolean-conditions': 2,
+    '@stencil/ban-default-true': 2,
+    '@stencil/strict-boolean-conditions': 2,
 
     // Resets
     "@typescript-eslint/camelcase": 0,
