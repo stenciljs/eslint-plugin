@@ -24,7 +24,7 @@ on:
 jobs:
   build:
     name: Build
-    uses: stenciljs/.github/workflows/build.yml@main
+    uses: stenciljs/.github/.github/workflows/build.yml@main
 
   get_dev_version:
     if: inputs.devRelease == 'yes'
