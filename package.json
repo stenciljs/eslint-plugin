@@ -14,7 +14,8 @@
     "Tom Chinery <tom.chinery@addtoevent.co.uk>",
     "Jack Woodward <jack@addtoevent.co.uk>",
     "Ionic Team <strteam@ionicframework.com>",
-    "d0whc3r <d0whc3r@gmail.com>"
+    "d0whc3r <d0whc3r@gmail.com>",
+    "Christian Bromann <christian.bromann@outsystems.com>"
   ],
   "type": "module",
   "main": "dist/index.js",
@@ -25,8 +26,7 @@
   "scripts": {
     "build": "rollup -c",
     "test": "vitest --run",
-    "version": "npm run build",
-    "release": "np --no-release-draft"
+    "version": "npm run build"
   },
   "dependencies": {
     "eslint-utils": "^3.0.0",
@@ -53,7 +53,6 @@
     "@vitest/coverage-v8": "^3.0.7",
     "eslint": "^9.21.0",
     "eslint-plugin-react": "^7.37.4",
-    "np": "^10.2.0",
     "rollup": "^4.34.8",
     "typescript": "^5.7.3",
     "vitest": "^3.0.7"
