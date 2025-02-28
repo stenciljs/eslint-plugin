@@ -1,4 +1,4 @@
-import { Rule } from 'eslint';
+import type { Rule } from 'eslint';
 import { getDecorator, stencilComponentContext } from '../utils';
 
 const DECORATORS = ['Prop', 'Method', 'Event'];

@@ -1,4 +1,4 @@
-import { Rule } from 'eslint';
+import type { Rule } from 'eslint';
 import ts from 'typescript';
 import { decoratorName, getDecorator, stencilComponentContext, stencilDecorators } from '../utils';
 

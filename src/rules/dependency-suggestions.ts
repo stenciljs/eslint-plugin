@@ -1,4 +1,4 @@
-import { Rule } from 'eslint';
+import type { Rule } from 'eslint';
 import ts from 'typescript';
 import { stencilComponentContext } from '../utils';
 import * as tsutils from 'tsutils';

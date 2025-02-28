@@ -3,7 +3,7 @@
  * @author Tom Chinery &lt;tom.chinery@addtoevent.co.uk&gt;
  */
 
-// @ts-expect-error - no types
+import type { Linter } from 'eslint';
 import react from 'eslint-plugin-react';
 import rules from './rules';
 import configs from './configs';
@@ -13,25 +13,25 @@ const plugin = {
   configs
 };
 
-const flatBase = {
-  plugins: { '@stencil-community': plugin },
+const flatBase: Linter.Config = {
+  plugins: { 'stencil': plugin },
   rules: configs.base.overrides[0].rules,
   languageOptions: { parserOptions: configs.base.overrides[0].parserOptions },
 }
 
-const flatRecommended = {
+const flatRecommended: Linter.Config = {
   plugins: { 
     react: react, 
-    '@stencil-community': plugin 
+    'stencil': plugin 
   },
   rules: configs.recommended.rules,
   languageOptions: { parserOptions: configs.base.overrides[0].parserOptions },
 }
 
-const flatStrict = {
+const flatStrict: Linter.Config = {
   plugins: { 
     react: react, 
-    '@stencil-community': plugin 
+    'stencil': plugin 
   },
   rules: configs.strict.rules,
   languageOptions: { parserOptions: configs.base.overrides[0].parserOptions },

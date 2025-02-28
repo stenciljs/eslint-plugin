@@ -1,5 +1,5 @@
-import {Rule} from 'eslint';
-import {getDecorator, stencilComponentContext} from '../utils';
+import type { Rule } from 'eslint';
+import { getDecorator, stencilComponentContext } from '../utils';
 
 const rule: Rule.RuleModule = {
   meta: {

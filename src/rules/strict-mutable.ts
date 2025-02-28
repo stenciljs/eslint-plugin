@@ -1,4 +1,4 @@
-import { Rule } from 'eslint';
+import type { Rule } from 'eslint';
 import { parseDecorator, stencilComponentContext } from '../utils';
 
 const mutableProps = new Map<string, any>();

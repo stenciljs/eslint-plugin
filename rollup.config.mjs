@@ -1,7 +1,8 @@
 import nodeResolve from "@rollup/plugin-node-resolve";
+import typescript from '@rollup/plugin-typescript';
 
 export default {
-  input: 'dist/build/index.js',
+  input: 'src/index.ts',
   plugins: [
     nodeResolve({
       preferBuiltins: true
@@ -18,7 +19,8 @@ export default {
     'eslint-plugin-react'
   ],
   output: {
-    file: 'dist/index.js',
-    format: 'commonjs'
-  }
+    dir: 'dist',
+    format: 'esm'
+  },
+  plugins: [typescript()]
 };

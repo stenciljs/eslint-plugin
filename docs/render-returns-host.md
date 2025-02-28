@@ -9,5 +9,5 @@ No config is needed
 ## Usage
 
 ```json
-{ "@stencil-community/render-returns-host": "error" }
+{ "stencil/render-returns-host": "error" }
 ```

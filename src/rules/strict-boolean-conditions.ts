@@ -16,7 +16,7 @@
  */
 import * as ts from "typescript";
 
-import { Rule } from 'eslint';
+import type { Rule } from 'eslint';
 
 const OPTION_ALLOW_NULL_UNION = "allow-null-union";
 const OPTION_ALLOW_UNDEFINED_UNION = "allow-undefined-union";

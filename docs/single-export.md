@@ -9,5 +9,5 @@ No config is needed
 ## Usage
 
 ```json
-{ "@stencil-community/single-export": "error" }
+{ "stencil/single-export": "error" }
 ```

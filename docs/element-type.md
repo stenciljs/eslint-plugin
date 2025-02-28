@@ -9,5 +9,5 @@ No config is needed
 ## Usage
 
 ```json
-{ "@stencil-community/element-type": "error" }
+{ "stencil/element-type": "error" }
 ```
