@@ -9,9 +9,7 @@
 
 import type { Rule } from 'eslint';
 import { stencilComponentContext } from '../utils';
-
-const jsdom = require("jsdom");
-const { JSDOM } = jsdom;
+import { JSDOM } from 'jsdom';
 
 const rule: Rule.RuleModule = {
   meta: {
