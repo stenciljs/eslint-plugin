@@ -10,6 +10,13 @@ export default defineConfig({
         ],
         coverage: {
             enabled: true,
+            include: ['src/**/*.ts'],
+            exclude: [
+                '**/dist/**',
+                '**/tests/**',
+                '**/node_modules/**',
+                '**/*.d.ts'
+            ],
             thresholds: {
                 branches: 83,
                 functions: 74,
