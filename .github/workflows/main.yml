@@ -19,20 +19,20 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - name: ⬇️ Checkout Code
+    - name: 📥 Checkout Code
       uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
-    - name: 🐢 Setup Node ${{ matrix.node }}
-      uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+    - name: 🟢 Setup Node ${{ matrix.node }}
+      uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
       with:
         node-version: ${{ matrix.node }}
         cache: 'npm'
 
-    - name: 🏗️ Install Dependencies
+    - name: 📦 Install Dependencies
       run: npm ci
 
-    - name: 👷 Build
+    - name: 🏗️ Build
       run: npm run build
 
-    - name: 🧪 Test jest
+    - name: 🧪 Test Jest
       run: npm run test
