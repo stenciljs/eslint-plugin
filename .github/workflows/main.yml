@@ -36,3 +36,4 @@ jobs:
 
     - name: 🧪 Test Jest
       run: npm run test
+
