@@ -1,4 +1,4 @@
-name: "Stencil ESLint Plugin Release"
+name: "Release - Stencil ESLint Plugin"
 
 on:
   workflow_dispatch:
