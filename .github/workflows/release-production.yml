@@ -6,25 +6,41 @@ on:
       bump:
         description: "Semver bump to apply (patch, minor, major)."
         required: true
-        type: choice
+        type: string
         default: patch
-        options:
-          - patch
-          - minor
-          - major
 
 permissions:
   contents: read
   id-token: write
 
 jobs:
+  validate_bump:
+    name: ✅ Validate Bump Input
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🔎 Ensure bump is allowed
+        env:
+          BUMP: ${{ inputs.bump }}
+        run: |
+          case "$BUMP" in
+            patch|minor|major)
+              exit 0
+              ;;
+            *)
+              echo "::error::Invalid bump input: '$BUMP'. Allowed values: patch, minor, major."
+              exit 1
+              ;;
+          esac
+
   build_eslint_plugin:
     name: 🏗️ Build ESLint Plugin
     uses: ./.github/workflows/build.yml
 
   publish_production:
     name: 🚀 Publish Production Build
-    needs: build_eslint_plugin
+    needs:
+      - build_eslint_plugin
+      - validate_bump
     uses: ./.github/workflows/publish-npm.yml
     with:
       tag: latest
