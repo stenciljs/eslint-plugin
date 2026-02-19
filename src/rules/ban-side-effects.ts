@@ -21,7 +21,7 @@ const rule: Rule.RuleModule = {
   },
 
   create(context): Rule.RuleListener {
-    const shouldSkip = /\b(spec|e2e|test)\./.test(context.getFilename());
+    const shouldSkip = /\b(spec|e2e|test)\./.test(context.filename);
     const skipFunctions = context.options[0] || DEFAULTS;
     if (shouldSkip) {
       return {};
