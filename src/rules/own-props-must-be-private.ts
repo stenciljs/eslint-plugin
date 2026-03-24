@@ -43,7 +43,7 @@ const rule: Rule.RuleModule = {
             node: node,
             message: `Own class properties cannot be public`,
             fix(fixer) {
-              const sourceCode = context.getSourceCode();
+              const sourceCode = context.sourceCode;
               const tokens = sourceCode.getTokens(node);
               const publicToken = tokens.find(token => token.value === 'public');
 
