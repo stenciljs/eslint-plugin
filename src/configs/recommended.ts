@@ -28,6 +28,7 @@ export default {
     'stencil/own-props-must-be-private': 1,
     'stencil/dependency-suggestions': 1,
     'stencil/required-jsdoc': 1,
+    'stencil/enforce-slot-jsdoc': 1,
     "react/jsx-no-bind": [1, {
       "ignoreRefs": true
     }]

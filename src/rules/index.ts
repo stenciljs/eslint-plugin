@@ -23,12 +23,14 @@ import banSideEffects from './ban-side-effects';
 import strictBooleanConditions from './strict-boolean-conditions';
 import banExportedConstEnums from './ban-exported-const-enums';
 import dependencySuggestions from './dependency-suggestions';
+import enforceSlotJsdoc from './enforce-slot-jsdoc';
 
 export default {
   'ban-side-effects': banSideEffects,
   'ban-default-true': banDefaultTrue,
   'ban-exported-const-enums': banExportedConstEnums,
   'dependency-suggestions': dependencySuggestions,
+  'enforce-slot-jsdoc': enforceSlotJsdoc,
   'strict-boolean-conditions': strictBooleanConditions,
   'async-methods': asyncMethods,
   'ban-prefix': banPrefix,
