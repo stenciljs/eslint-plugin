@@ -1,6 +1,5 @@
 import type { Rule } from 'eslint';
-import ts from 'typescript';
-import { getDecorator, isPrivate, stencilComponentContext } from '../utils';
+import { decoratorName, stencilComponentContext } from '../utils';
 
 const varsList = new Set<string>();
 
@@ -18,24 +17,25 @@ const rule: Rule.RuleModule = {
   create(context): Rule.RuleListener {
     const stencil = stencilComponentContext();
 
-    const parserServices = context.sourceCode.parserServices;
-
     function getVars(node: any) {
       if (!stencil.isComponent()) {
         return;
       }
-      const originalNode = parserServices.esTreeNodeToTSNodeMap.get(node);
-      const varName = originalNode.parent.name.escapedText;
-      varsList.add(varName);
+      // node is the Decorator, parent is PropertyDefinition/MethodDefinition
+      const memberNode = node.parent;
+      const varName = memberNode.key?.name || memberNode.key?.value;
+      if (varName) {
+        varsList.add(varName);
+      }
     }
 
     function checkWatch(node: any) {
       if (!stencil.isComponent()) {
         return;
       }
-      const originalNode = parserServices.esTreeNodeToTSNodeMap.get(node);
-      const varName = originalNode.expression.arguments[0].text;
-      if (!varsList.has(varName) && !isReservedAttribute(varName.toLowerCase())) {
+      // node is the Decorator; the Watch argument is the first arg of the call expression
+      const varName = node.expression?.arguments?.[0]?.value;
+      if (varName && !varsList.has(varName) && !isReservedAttribute(varName.toLowerCase())) {
         context.report({
           node: node,
           message: `Watch decorator @Watch("${varName}") is not matching with any @Prop() or @State()`,

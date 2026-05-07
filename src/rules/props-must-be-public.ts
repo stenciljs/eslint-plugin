@@ -1,6 +1,5 @@
 import type { Rule } from 'eslint';
-import ts from 'typescript';
-import { getDecorator, isPrivate, stencilComponentContext } from '../utils';
+import { getDecorator, isPrivateESTree, stencilComponentContext } from '../utils';
 
 const rule: Rule.RuleModule = {
   meta: {
@@ -16,13 +15,11 @@ const rule: Rule.RuleModule = {
   create(context): Rule.RuleListener {
     const stencil = stencilComponentContext();
 
-    const parserServices = context.sourceCode.parserServices;
     return {
       ...stencil.rules,
       'PropertyDefinition': (node: any) => {
         if (stencil.isComponent() && getDecorator(node, 'Prop')) {
-          const originalNode = parserServices.esTreeNodeToTSNodeMap.get(node) as ts.Node;
-          if (isPrivate(originalNode)) {
+          if (isPrivateESTree(node)) {
             context.report({
               node: node,
               message: `Class properties decorated with @Prop() cannot be private nor protected`

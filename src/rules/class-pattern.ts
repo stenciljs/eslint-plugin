@@ -27,7 +27,6 @@ const rule: Rule.RuleModule = {
 
   create(context): Rule.RuleListener {
     const stencil = stencilComponentContext();
-    const parserServices = context.sourceCode.parserServices;
 
     return {
       ...stencil.rules,
@@ -38,8 +37,10 @@ const rule: Rule.RuleModule = {
         if (!component || !options || !pattern) {
           return;
         }
-        const originalNode = parserServices.esTreeNodeToTSNodeMap.get(node);
-        const className = originalNode.symbol.escapedName;
+        const className = node.id?.name;
+        if (!className) {
+          return;
+        }
         const regExp = new RegExp(pattern, ignoreCase ? 'i' : undefined);
 
         if (!regExp.test(className)) {

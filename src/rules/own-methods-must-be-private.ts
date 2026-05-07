@@ -1,10 +1,8 @@
 import type { Rule } from 'eslint';
-import ts from 'typescript';
 import {
-  getDecoratorList,
-  isPrivate,
+  hasStencilDecorator,
+  isPrivateESTree,
   stencilComponentContext,
-  stencilDecorators,
   stencilLifecycle,
 } from "../utils";
 
@@ -23,25 +21,17 @@ const rule: Rule.RuleModule = {
   create(context): Rule.RuleListener {
     const stencil = stencilComponentContext();
 
-    const parserServices = context.sourceCode.parserServices;
     return {
       ...stencil.rules,
       "MethodDefinition[kind=method]": (node: any) => {
         if (!stencil.isComponent()) {
           return;
         }
-        const originalNode = parserServices.esTreeNodeToTSNodeMap.get(node);
 
-        const decorators = getDecoratorList(originalNode);
-        const stencilDecorator =
-          decorators &&
-          decorators.some((dec: any) =>
-            stencilDecorators.includes(dec.expression.expression.escapedText)
-          );
-        const stencilCycle = stencilLifecycle.includes(
-          originalNode.name.escapedText
-        );
-        if (!stencilDecorator && !stencilCycle && !isPrivate(originalNode)) {
+        const methodName = node.key.name || node.key.value;
+        const isStencilCycle = stencilLifecycle.includes(methodName);
+
+        if (!hasStencilDecorator(node) && !isStencilCycle && !isPrivateESTree(node)) {
           context.report({
             node: node,
             message: `Own class methods cannot be public`,

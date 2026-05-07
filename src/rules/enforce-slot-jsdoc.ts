@@ -1,5 +1,5 @@
 import { Rule } from 'eslint';
-import { stencilComponentContext } from '../utils';
+import { getJSDocComments, stencilComponentContext } from '../utils';
 
 const rule: Rule.RuleModule = {
   meta: {
@@ -14,18 +14,19 @@ const rule: Rule.RuleModule = {
 
   create(context): Rule.RuleListener {
     const stencil = stencilComponentContext();
-    const parserServices = context.sourceCode.parserServices;
     const implementedSlots = new Set<string>();
 
     return {
       ...stencil.rules,
       'ClassDeclaration:exit': (node: any) => {
         if (stencil.isComponent()) {
-          const originalNode = parserServices.esTreeNodeToTSNodeMap.get(node);
-          const jsDoc = originalNode.jsDoc;
-          const documentedSlots: Set<string> = new Set(jsDoc[0].tags
-            .filter((tag: any) => tag.tagName.escapedText === "slot")
-            .map((tag: any) => tag.comment.split("-")[0].trim() || "<default>")
+          const jsDocs = getJSDocComments(node, context.sourceCode);
+
+          const documentedSlots: Set<string> = new Set(
+            (jsDocs.length && jsDocs[0].tags.length
+              ? jsDocs[0].tags.filter((tag: any) => tag.tagName === "slot")
+              : []
+            ).map((tag: any) => tag.comment.split("-")[0].trim() || "<default>")
           );
 
           const missingDocSlots = Array.from(implementedSlots).filter(slot => !documentedSlots.has(slot));

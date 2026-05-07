@@ -1,9 +1,8 @@
 import type { Rule } from "eslint";
 import {
-  getDecoratorList,
-  isPrivate,
+  hasStencilDecorator,
+  isPrivateESTree,
   stencilComponentContext,
-  stencilDecorators,
 } from "../utils";
 
 const rule: Rule.RuleModule = {
@@ -21,7 +20,6 @@ const rule: Rule.RuleModule = {
   create(context): Rule.RuleListener {
     const stencil = stencilComponentContext();
 
-    const parserServices = context.sourceCode.parserServices;
     return {
       ...stencil.rules,
       PropertyDefinition: (node: any) => {
@@ -29,16 +27,7 @@ const rule: Rule.RuleModule = {
           return;
         }
 
-        const originalNode = parserServices.esTreeNodeToTSNodeMap.get(node);
-        const decorators = getDecoratorList(originalNode);
-
-        const stencilDecorator =
-          decorators &&
-          decorators.some((dec: any) =>
-            stencilDecorators.includes(dec.expression.expression.escapedText)
-          );
-
-        if (!stencilDecorator && !isPrivate(originalNode)) {
+        if (!hasStencilDecorator(node) && !isPrivateESTree(node)) {
           context.report({
             node: node,
             message: `Own class properties cannot be public`,
