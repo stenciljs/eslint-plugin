@@ -29,10 +29,12 @@ const rule: Rule.RuleModule = {
 
     const stencil = stencilComponentContext();
     const parserServices = context.sourceCode.parserServices;
-    if (!parserServices?.esTreeNodeToTSNodeMap || !parserServices?.program) {
-      return { ...stencil.rules };
+    const hasTypeChecker = parserServices?.esTreeNodeToTSNodeMap && parserServices?.program;
+
+    let typeChecker: ts.TypeChecker | undefined;
+    if (hasTypeChecker) {
+      typeChecker = parserServices.program.getTypeChecker() as ts.TypeChecker;
     }
-    const typeChecker = parserServices.program.getTypeChecker() as ts.TypeChecker;
 
     return {
       ...stencil.rules,
@@ -40,13 +42,26 @@ const rule: Rule.RuleModule = {
         if (!stencil.isComponent()) {
           return;
         }
-        const originalNode = parserServices.esTreeNodeToTSNodeMap.get(node.argument) as ts.MethodDeclaration;
-        const type = typeChecker.getTypeAtLocation(originalNode);
-        if (type && type.symbol && type.symbol.escapedName === 'Array') {
+
+        // ESTree fallback: check if return argument is an ArrayExpression
+        if (node.argument?.type === 'ArrayExpression') {
           context.report({
             node: node,
             message: `Avoid returning an array in the render() function, use <Host> instead.`
           });
+          return;
+        }
+
+        // Type-checker path: resolve type to catch cases where a variable holding an array is returned
+        if (typeChecker && hasTypeChecker) {
+          const originalNode = parserServices.esTreeNodeToTSNodeMap.get(node.argument) as ts.MethodDeclaration;
+          const type = typeChecker.getTypeAtLocation(originalNode);
+          if (type && type.symbol && type.symbol.escapedName === 'Array') {
+            context.report({
+              node: node,
+              message: `Avoid returning an array in the render() function, use <Host> instead.`
+            });
+          }
         }
       }
     };
