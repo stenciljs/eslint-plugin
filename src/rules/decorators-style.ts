@@ -73,7 +73,7 @@ const rule: Rule.RuleModule = {
     const opts = context.options[0] || {};
     const options = { ...DEFAULTS, ...opts };
 
-    function checkStyle(decorator: any, index: number, decorators: any[]) {
+    function checkStyle(decorator: any) {
       const decName = decoratorName(decorator);
       const config = options[decName.toLowerCase()];
       if (!config || config === 'ignore') {
@@ -86,8 +86,12 @@ const rule: Rule.RuleModule = {
       const isOnSameLineAsMember = decoratorEndLine === memberStartLine;
 
       if (config === 'multiline') {
-        // For multiline: the next element (next decorator or member) must start on a different line
-        const nextDecorator = decorators[index + 1];
+        // For multiline: the next element (next decorator or member) must start on a different line.
+        // Use all decorators on the node, not just filtered Stencil ones, so non-Stencil
+        // decorators on the same line are correctly detected as adjacency violations.
+        const allDecorators: any[] = node.decorators || [];
+        const indexInAll = allDecorators.indexOf(decorator);
+        const nextDecorator = indexInAll >= 0 ? allDecorators[indexInAll + 1] : undefined;
         const nextStartLine = nextDecorator ? nextDecorator.loc.start.line : memberStartLine;
         if (decoratorEndLine === nextStartLine) {
           context.report({

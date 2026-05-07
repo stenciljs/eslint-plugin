@@ -21,16 +21,12 @@ const rule: Rule.RuleModule = {
       'ClassDeclaration:exit': (node: any) => {
         if (stencil.isComponent()) {
           const jsDocs = getJSDocComments(node, context.sourceCode);
-          if (!jsDocs.length || !jsDocs[0].tags.length) {
-            implementedSlots.clear();
-            stencil.rules["ClassDeclaration:exit"](node);
-            return;
-          }
 
           const documentedSlots: Set<string> = new Set(
-            jsDocs[0].tags
-              .filter((tag: any) => tag.tagName === "slot")
-              .map((tag: any) => tag.comment.split("-")[0].trim() || "<default>")
+            (jsDocs.length && jsDocs[0].tags.length
+              ? jsDocs[0].tags.filter((tag: any) => tag.tagName === "slot")
+              : []
+            ).map((tag: any) => tag.comment.split("-")[0].trim() || "<default>")
           );
 
           const missingDocSlots = Array.from(implementedSlots).filter(slot => !documentedSlots.has(slot));

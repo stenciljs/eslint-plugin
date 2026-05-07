@@ -39,3 +39,53 @@ test('decorators-style', () => {
     ]
   });
 });
+
+test('decorators-style detects multiline violation with adjacent decorator on same line', () => {
+  const options = [{
+    watch: 'multiline',
+    listen: 'multiline'
+  }];
+  ruleTester.run('decorators-style-mixed', rule, {
+    valid: [
+      {
+        // Each decorator on its own line — valid multiline
+        code: `
+@Component({ tag: 'sample-tag' })
+export class SampleTag {
+  @Prop() test?: string;
+
+  @Listen('click')
+  @Watch('test')
+  watchForTest() {}
+
+  render() {
+    return (<div>test</div>);
+  }
+}`,
+        options,
+        filename: path.resolve(__dirname, 'decorators-style.good.tsx')
+      }
+    ],
+
+    invalid: [
+      {
+        // Both on same line — @Listen should be flagged (next is @Watch on same line)
+        code: `
+@Component({ tag: 'sample-tag' })
+export class SampleTag {
+  @Prop() test?: string;
+
+  @Listen('click') @Watch('test')
+  watchForTest() {}
+
+  render() {
+    return (<div>test</div>);
+  }
+}`,
+        options,
+        filename: path.resolve(__dirname, 'decorators-style.wrong.tsx'),
+        errors: 1  // @Listen flagged; @Watch has newline after it (member on next line)
+      }
+    ]
+  });
+});
