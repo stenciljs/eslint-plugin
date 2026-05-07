@@ -1,5 +1,4 @@
 import type { Rule } from 'eslint';
-import ts from 'typescript';
 import { decoratorName, getDecorator, stencilComponentContext, stencilDecorators } from '../utils';
 
 type DecoratorsStyleOptionsEnum = 'inline' | 'multiline' | 'ignore';
@@ -71,28 +70,35 @@ const rule: Rule.RuleModule = {
   create(context): Rule.RuleListener {
     const stencil = stencilComponentContext();
 
-    const parserServices = context.sourceCode.parserServices;
     const opts = context.options[0] || {};
     const options = { ...DEFAULTS, ...opts };
 
-    function checkStyle(decorator: any) {
+    function checkStyle(decorator: any, index: number, decorators: any[]) {
       const decName = decoratorName(decorator);
       const config = options[decName.toLowerCase()];
       if (!config || config === 'ignore') {
         return;
       }
-      const decoratorNode = parserServices.esTreeNodeToTSNodeMap.get(decorator) as ts.Node;
-      const decoratorText = decoratorNode.getText()
-        .replace('(', '\\(')
-        .replace(')', '\\)');
-      const text = decoratorNode.parent.getText();
-      const separator = config === 'multiline' ? '\\r?\\n' : ' ';
-      const regExp = new RegExp(`${decoratorText}${separator}`, 'i');
-      if (!regExp.test(text)) {
-        const node = decorator.parent;
+
+      const node = decorator.parent;
+      const decoratorEndLine = decorator.loc.end.line;
+      const memberStartLine = node.key.loc.start.line;
+      const isOnSameLineAsMember = decoratorEndLine === memberStartLine;
+
+      if (config === 'multiline') {
+        // For multiline: the next element (next decorator or member) must start on a different line
+        const nextDecorator = decorators[index + 1];
+        const nextStartLine = nextDecorator ? nextDecorator.loc.start.line : memberStartLine;
+        if (decoratorEndLine === nextStartLine) {
+          context.report({
+            node: node,
+            message: `The @${decName} decorator can only be applied as multiline.`,
+          });
+        }
+      } else if (config === 'inline' && !isOnSameLineAsMember) {
         context.report({
           node: node,
-          message: `The @${decName} decorator can only be applied as ${config}.`,
+          message: `The @${decName} decorator can only be applied as inline.`,
         });
       }
     }

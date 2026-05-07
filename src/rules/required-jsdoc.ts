@@ -1,5 +1,5 @@
 import type { Rule } from 'eslint';
-import { getDecorator, stencilComponentContext } from '../utils';
+import { getDecorator, getJSDocComments, stencilComponentContext } from '../utils';
 
 const DECORATORS = ['Prop', 'Method', 'Event'];
 const INVALID_TAGS = ['type', 'memberof'];
@@ -18,8 +18,6 @@ const rule: Rule.RuleModule = {
   create(context): Rule.RuleListener {
     const stencil = stencilComponentContext();
 
-    const parserServices = context.sourceCode.parserServices;
-
     function getJSDoc(node: any) {
       if (!stencil.isComponent()) {
         return;
@@ -27,12 +25,11 @@ const rule: Rule.RuleModule = {
 
       DECORATORS.forEach((decName) => {
         if (getDecorator(node, decName)) {
-          const originalNode = parserServices.esTreeNodeToTSNodeMap.get(node);
-          const jsDoc = originalNode.jsDoc;
-          const isValid = jsDoc && jsDoc.length;
+          const jsDocs = getJSDocComments(node, context.sourceCode);
+          const isValid = jsDocs.length > 0;
           const haveTags = isValid &&
-              jsDoc.some((jsdoc: any) => jsdoc.tags && jsdoc.tags.length && jsdoc.tags.some(
-                  (tag: any) => INVALID_TAGS.includes(tag.tagName.escapedText.toLowerCase())));
+              jsDocs.some((jsdoc: any) => jsdoc.tags.length > 0 && jsdoc.tags.some(
+                  (tag: any) => INVALID_TAGS.includes(tag.tagName.toLowerCase())));
           if (!isValid) {
             context.report({
               node: node,

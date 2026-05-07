@@ -3,6 +3,9 @@ import { getStaticValue } from 'eslint-utils';
 
 const SyntaxKind = ts.SyntaxKind;
 
+/**
+ * @deprecated Use {@link isPrivateESTree} instead to avoid dependency on TypeScript AST.
+ */
 export function isPrivate(originalNode: ts.Node) {
   const modifiers = ts.canHaveModifiers(originalNode)
     ? ts.getModifiers(originalNode)
@@ -19,6 +22,20 @@ export function isPrivate(originalNode: ts.Node) {
   return firstChildNode ? firstChildNode.kind === SyntaxKind.PrivateIdentifier : false;
 }
 
+/**
+ * Checks if an ESTree node has private or protected accessibility.
+ */
+export function isPrivateESTree(node: any): boolean {
+  if (node.accessibility === 'private' || node.accessibility === 'protected') {
+    return true;
+  }
+  // detect private identifier (#)
+  return node.key?.type === 'PrivateIdentifier';
+}
+
+/**
+ * @deprecated Use {@link hasStencilDecorator} instead to avoid dependency on TypeScript AST.
+ */
 export function getDecoratorList(
   originalNode: ts.Node
 ): readonly ts.Decorator[] | undefined {
@@ -26,6 +43,37 @@ export function getDecoratorList(
     ? ts.getDecorators(originalNode)
     : undefined;
   return decorators;
+}
+
+/**
+ * Checks if an ESTree node has any Stencil decorator.
+ */
+export function hasStencilDecorator(node: any): boolean {
+  const decorators: any[] = getDecorator(node);
+  return decorators.some((dec: any) => stencilDecorators.includes(decoratorName(dec)));
+}
+
+/**
+ * Returns the JSDoc block comments attached to a node using ESTree sourceCode APIs.
+ * Each returned object has `value` (the raw comment text) and parsed `tags`.
+ */
+export function getJSDocComments(node: any, sourceCode: any): { value: string; tags: { tagName: string; comment: string }[] }[] {
+  let comments = sourceCode.getCommentsBefore(node);
+  // If node has decorators, JSDoc may be attached before the first decorator
+  if ((!comments || comments.length === 0) && node.decorators && node.decorators.length > 0) {
+    comments = sourceCode.getCommentsBefore(node.decorators[0]);
+  }
+  return comments
+    .filter((c: any) => c.type === 'Block' && c.value.startsWith('*'))
+    .map((c: any) => {
+      const tags: { tagName: string; comment: string }[] = [];
+      const tagRegex = /@(\w+)\s*(.*)/g;
+      let match;
+      while ((match = tagRegex.exec(c.value)) !== null) {
+        tags.push({ tagName: match[1], comment: match[2].trim() });
+      }
+      return { value: c.value, tags };
+    });
 }
 
 export function getDecorator(node: any, decoratorName?: string): any | any[] {

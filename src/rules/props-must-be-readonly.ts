@@ -1,5 +1,4 @@
 import type { Rule } from 'eslint';
-import ts from 'typescript';
 import { getDecorator, parseDecorator, stencilComponentContext } from '../utils';
 
 const rule: Rule.RuleModule = {
@@ -17,7 +16,6 @@ const rule: Rule.RuleModule = {
   create(context): Rule.RuleListener {
     const stencil = stencilComponentContext();
 
-    const parserServices = context.sourceCode.parserServices;
     return {
       ...stencil.rules,
       'PropertyDefinition': (node: any) => {
@@ -28,12 +26,7 @@ const rule: Rule.RuleModule = {
             return;
           }
 
-          const originalNode = parserServices.esTreeNodeToTSNodeMap.get(node) as ts.Node;
-          const hasReadonly = !!(
-              ts.canHaveModifiers(originalNode) &&
-              ts.getModifiers(originalNode)?.some(m => m.kind === ts.SyntaxKind.ReadonlyKeyword)
-          );
-          if (!hasReadonly) {
+          if (!node.readonly) {
             context.report({
               node: node.key,
               message: `Class properties decorated with @Prop() should be readonly`,
