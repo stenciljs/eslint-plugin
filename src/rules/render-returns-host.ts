@@ -29,6 +29,9 @@ const rule: Rule.RuleModule = {
 
     const stencil = stencilComponentContext();
     const parserServices = context.sourceCode.parserServices;
+    if (!parserServices?.esTreeNodeToTSNodeMap || !parserServices?.program) {
+      return { ...stencil.rules };
+    }
     const typeChecker = parserServices.program.getTypeChecker() as ts.TypeChecker;
 
     return {

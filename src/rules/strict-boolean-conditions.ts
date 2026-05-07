@@ -60,6 +60,9 @@ const rule: Rule.RuleModule = {
 
   create(context): Rule.RuleListener {
     const parserServices = context.sourceCode.parserServices;
+    if (!parserServices?.esTreeNodeToTSNodeMap || !parserServices?.program) {
+      return {};
+    }
     const program = parserServices.program;
     const rawOptions = context.options[0] || ['allow-null-union', 'allow-undefined-union', 'allow-boolean-or-undefined']
     const options = parseOptions(rawOptions, true);
