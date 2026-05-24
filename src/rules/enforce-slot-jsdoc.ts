@@ -26,7 +26,12 @@ const rule: Rule.RuleModule = {
             (jsDocs.length && jsDocs[0].tags.length
               ? jsDocs[0].tags.filter((tag: any) => tag.tagName === "slot")
               : []
-            ).map((tag: any) => tag.comment.split("-")[0].trim() || "<default>")
+            ).map((tag: any) => {
+              // If description has hyphen, it must have a space, see https://jsdoc.app/tags-param
+              const slotCommentParts = tag.comment.split("- ");
+              // If description does not contain hyphen (length == 1), it will be treated as default slot.
+              return slotCommentParts.length > 1 && slotCommentParts[0].trim() ? slotCommentParts[0].trim() : "<default>";
+            })
           );
 
           const missingDocSlots = Array.from(implementedSlots).filter(slot => !documentedSlots.has(slot));

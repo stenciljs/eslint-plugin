@@ -101,6 +101,10 @@ This rule catches Stencil decorators in bad locations.
 
 This rule catches Stencil decorators style usage.
 
+- [`stencil/enforce-slot-jsdoc`](./docs/enforce-slot-jsdoc.md)
+
+This rule enforces JSDoc comments for slots in Stencil components.
+
 - [`stencil/element-type`](./docs/element-type.md)
 
 This rule catches Stencil Element decorator have the correct type.
@@ -115,7 +119,7 @@ This rule catches Stencil Methods marked as private or protected.
 
 - [`stencil/no-unused-watch`](./docs/no-unused-watch.md)
 
-This rule catches Stencil Watchs with non existing Props or States.
+This rule catches Stencil Watch decorators for non-existing Props or States.
 
 - [`stencil/own-methods-must-be-private`](./docs/own-methods-must-be-private.md)
 
