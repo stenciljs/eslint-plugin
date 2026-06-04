@@ -125,6 +125,19 @@ export default 42;`,
         errors: 1
       },
       {
+        // export default class with id
+        code: `@Component({ tag: 'sample-tag' })
+export class SampleTag {
+  render() {
+    return (<div>test</div>);
+  }
+}
+
+export default class Helper {}`,
+        filename: 'invalid-default-class.tsx',
+        errors: 1
+      },
+      {
         code: `@Component({ tag: 'sample-tag' })
 export class SampleTag {
   render() {

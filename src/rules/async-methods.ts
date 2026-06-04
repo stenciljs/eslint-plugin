@@ -34,7 +34,7 @@ const rule: Rule.RuleModule = {
         const node = decoratorNode.parent;
 
         // Type-checker path: precise thenable check
-        if (typeChecker && hasTypeChecker) {
+        if (typeChecker) {
           const method = parserServices.esTreeNodeToTSNodeMap.get(node);
           const signature = typeChecker.getSignatureFromDeclaration(method);
           const returnType = typeChecker.getReturnTypeOfSignature(signature!);
@@ -61,6 +61,8 @@ const rule: Rule.RuleModule = {
         }
 
         // Report error with fixer
+        // Note: context.sourceCode.getText() returns only the node's own text (no leading
+        // whitespace), so the trimLeft() call from the old getFullText() approach is not needed.
         const originalText = context.sourceCode.getText(node);
         context.report({
           node: node.key,

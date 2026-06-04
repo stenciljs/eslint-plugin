@@ -43,7 +43,9 @@ const rule: Rule.RuleModule = {
           return;
         }
 
-        // ESTree fallback: check if return argument is an ArrayExpression
+        // ESTree fallback: check if return argument is a literal ArrayExpression (e.g. `return [<A/>, <B/>]`).
+        // This is checked first since it's a zero-cost syntactic test that works with or without type info.
+        // The type-checker path below catches the less common case of a variable holding an array.
         if (node.argument?.type === 'ArrayExpression') {
           context.report({
             node: node,

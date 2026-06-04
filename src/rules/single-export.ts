@@ -72,10 +72,9 @@ const rule: Rule.RuleModule = {
                 exportedValues.push({ node: decl.id, name: decl.id.name });
               }
             }
-          } else if (node.declaration.type === 'TSInterfaceDeclaration' || node.declaration.type === 'TSTypeAliasDeclaration') {
-            // Type-only, skip
-            return;
           }
+          // Note: TSInterfaceDeclaration and TSTypeAliasDeclaration are already excluded
+          // by the exportKind === 'type' check above (typescript-eslint parser marks them as type exports)
         }
         if (node.specifiers) {
           for (const spec of node.specifiers) {
