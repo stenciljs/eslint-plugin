@@ -43,7 +43,7 @@ export class SampleTag {
         filename: 'valid.tsx'
       },
       {
-        // Type exports are allowed
+        // Type exports are allowed (export type alias)
         code: `@Component({ tag: 'sample-tag' })
 export class SampleTag {
   render() {
@@ -52,6 +52,22 @@ export class SampleTag {
 }
 export type SampleProps = { name: string };`,
         filename: 'valid-type.tsx'
+      },
+      {
+        // Interface exports are allowed (TSInterfaceDeclaration)
+        code: `@Component({ tag: 'sample-tag' })
+export class SampleTag {
+  render() {
+    return (<div>test</div>);
+  }
+}
+export interface SampleInterface { name: string; }`,
+        filename: 'valid-interface.tsx'
+      },
+      {
+        // No @Component — rule should not report anything
+        code: `export function helper() {}`,
+        filename: 'valid-no-component.tsx'
       }
     ],
     invalid: [
@@ -65,6 +81,47 @@ export class SampleTag {
 
 export const helper = () => {};`,
         filename: 'invalid.tsx',
+        errors: 1
+      },
+      {
+        // Exported function declaration
+        code: `@Component({ tag: 'sample-tag' })
+export class SampleTag {
+  render() {
+    return (<div>test</div>);
+  }
+}
+
+export function helper() {}`,
+        filename: 'invalid-function.tsx',
+        errors: 1
+      },
+      {
+        // Re-export specifier: export { helper }
+        code: `function helper() {}
+
+@Component({ tag: 'sample-tag' })
+export class SampleTag {
+  render() {
+    return (<div>test</div>);
+  }
+}
+
+export { helper };`,
+        filename: 'invalid-specifier.tsx',
+        errors: 1
+      },
+      {
+        // export default expression (no id)
+        code: `@Component({ tag: 'sample-tag' })
+export class SampleTag {
+  render() {
+    return (<div>test</div>);
+  }
+}
+
+export default 42;`,
+        filename: 'invalid-default.tsx',
         errors: 1
       },
       {

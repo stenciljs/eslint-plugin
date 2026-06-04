@@ -57,6 +57,16 @@ export class SampleTag {
   render() { return (<div>test</div>); }
 }`,
         filename: 'valid-promise-annotation.tsx'
+      },
+      {
+        // @Method outside @Component — rule should skip (isComponent() is false)
+        code: `export class NotAComponent {
+  @Method()
+  someMethod() {
+    return 'method';
+  }
+}`,
+        filename: 'valid-not-component.tsx'
       }
     ],
     invalid: [
