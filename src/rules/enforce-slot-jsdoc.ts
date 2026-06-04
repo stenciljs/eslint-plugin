@@ -26,7 +26,12 @@ const rule: Rule.RuleModule = {
             (jsDocs.length && jsDocs[0].tags.length
               ? jsDocs[0].tags.filter((tag: any) => tag.tagName === "slot")
               : []
-            ).map((tag: any) => tag.comment.split("-")[0].trim() || "<default>")
+            ).map((tag: any) => {
+              const c = tag.comment.trim();
+              if (!c || c === '-' || c.startsWith('- ')) return '<default>';
+              const idx = c.indexOf(' - ');
+              return idx === -1 ? c : c.slice(0, idx).trim();
+            })
           );
 
           const missingDocSlots = Array.from(implementedSlots).filter(slot => !documentedSlots.has(slot));
