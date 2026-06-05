@@ -11,15 +11,22 @@ test('stencil rules', () => {
     good: path.resolve(__dirname, 'enforce-slot-jsdoc.good.tsx'),
     wrong: path.resolve(__dirname, 'enforce-slot-jsdoc.wrong.tsx'),
     noJsdoc: path.resolve(__dirname, 'enforce-slot-jsdoc.no-jsdoc.tsx'),
+    hyphenated: path.resolve(__dirname, 'enforce-slot-jsdoc.hyphenated.tsx'),
+    hyphenatedWrong: path.resolve(__dirname, 'enforce-slot-jsdoc.hyphenated-wrong.tsx'),
   };
-  const validCode = fs.readFileSync(files.good, 'utf8');
 
   ruleTester.run('enforce-slot-jsdoc', rule, {
     valid: [
       {
-        code: validCode,
-        filename: files.good
-      }
+        code: fs.readFileSync(files.good, 'utf8'),
+        filename: files.good,
+      },
+      {
+        // Hyphenated slot names must be documented using their full name,
+        // not just the segment before the first hyphen.
+        code: fs.readFileSync(files.hyphenated, 'utf8'),
+        filename: files.hyphenated,
+      },
     ],
 
     invalid: [
@@ -32,7 +39,14 @@ test('stencil rules', () => {
         code: fs.readFileSync(files.noJsdoc, 'utf8'),
         filename: files.noJsdoc,
         errors: 2, // <default> and header slots not documented
-      }
+      },
+      {
+        // Documenting only the first segment of a hyphenated slot name
+        // (e.g. @slot brand instead of @slot brand-bar-logo) must not pass.
+        code: fs.readFileSync(files.hyphenatedWrong, 'utf8'),
+        filename: files.hyphenatedWrong,
+        errors: 2, // brand-bar-logo not documented, brand not implemented
+      },
     ]
   });
 });
