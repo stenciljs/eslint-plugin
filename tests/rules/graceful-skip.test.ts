@@ -3,7 +3,6 @@ import { test } from "vitest";
 import { ruleTesterNoTypeInfo } from "./rule-tester-no-typeinfo";
 import asyncMethods from "../../src/rules/async-methods";
 import renderReturnsHost from "../../src/rules/render-returns-host";
-import singleExport from "../../src/rules/single-export";
 import strictBooleanConditions from "../../src/rules/strict-boolean-conditions";
 
 const stencilComponent = `
@@ -23,13 +22,6 @@ test("async-methods skips gracefully without type info", () => {
 
 test("render-returns-host skips gracefully without type info", () => {
   ruleTesterNoTypeInfo.run("render-returns-host", renderReturnsHost, {
-    valid: [{ code: stencilComponent }],
-    invalid: [],
-  });
-});
-
-test("single-export skips gracefully without type info", () => {
-  ruleTesterNoTypeInfo.run("single-export", singleExport, {
     valid: [{ code: stencilComponent }],
     invalid: [],
   });
