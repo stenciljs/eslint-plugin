@@ -3,6 +3,7 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   test: {
     testTimeout: 30 * 1000, // allow complex ESLint rule suites to gather type info
+    isolate: false,
     include: ["tests/**/*.test.ts"],
     exclude: ["dist", ".idea", ".git", ".cache", "**/node_modules/**"],
     coverage: {
