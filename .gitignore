@@ -6,3 +6,7 @@ dist
 report
 *.tgz
 coverage
+
+# scratch output from running `stencil init`/`generate` against the dev wizard
+tests/wizard-playground/*
+!tests/wizard-playground/package.json
