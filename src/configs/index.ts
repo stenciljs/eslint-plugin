@@ -1,8 +1,8 @@
-import type { Linter } from 'eslint';
+import type { Linter } from "eslint";
 
-import base from './base';
-import recommended from './recommended';
-import strict from './strict';
+import base from "./base";
+import recommended from "./recommended";
+import strict from "./strict";
 
 export default {
   base,
@@ -12,5 +12,5 @@ export default {
    * will be populated in `/src/index.ts`
    * For backward compatibility
    */
-  flat: {} as Record<string, Linter.Config>
+  flat: {} as Record<string, Linter.Config>,
 };

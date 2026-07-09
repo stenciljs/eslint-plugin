@@ -11,6 +11,3 @@ No config is needed
 ```json
 { "stencil/ban-default-true": "error" }
 ```
-
-
-

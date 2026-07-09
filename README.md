@@ -69,9 +69,7 @@ npm run lint
   "parserOptions": {
     "project": "./tsconfig.json"
   },
-  "extends": [
-    "plugin:stencil/recommended"
-  ]
+  "extends": ["plugin:stencil/recommended"]
 }
 ```
 
@@ -169,7 +167,8 @@ This rule catches Stencil Prop marked as mutable but not changing value in code.
   "stencil/ban-prefix": ["error", ["stencil", "stnl", "st"]],
   "stencil/decorators-context": "error",
   "stencil/decorators-style": [
-    "error", {
+    "error",
+    {
       "prop": "inline",
       "state": "inline",
       "element": "inline",
@@ -177,7 +176,8 @@ This rule catches Stencil Prop marked as mutable but not changing value in code.
       "method": "multiline",
       "watch": "multiline",
       "listen": "multiline"
-    }],
+    }
+  ],
   "stencil/element-type": "error",
   "stencil/host-data-deprecated": "error",
   "stencil/methods-must-be-public": "error",
@@ -198,6 +198,7 @@ This rule catches Stencil Prop marked as mutable but not changing value in code.
 ## Contributing
 
 When submitting new rules please:
+
 - Describe your new rule in the README.md
 - Provide a suite of unit tests for your rule
 - Follow ESLint Rule guidelines (the [eslint-rule yeoman generator](https://github.com/eslint/generator-eslint) is good for this)

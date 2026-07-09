@@ -1,23 +1,23 @@
-import type { Rule } from 'eslint';
+import type { Rule } from "eslint";
 
 const rule: Rule.RuleModule = {
   meta: {
     docs: {
-      description: 'This rule catches function calls at the top level',
-      category: 'Possible Errors',
-      recommended: false
+      description: "This rule catches function calls at the top level",
+      category: "Possible Errors",
+      recommended: false,
     },
     schema: [
       {
-        type: 'array',
+        type: "array",
         items: {
-          type: 'string'
+          type: "string",
         },
         minLength: 0,
-        additionalProperties: false
-      }
+        additionalProperties: false,
+      },
     ],
-    type: 'suggestion'
+    type: "suggestion",
   },
 
   create(context): Rule.RuleListener {
@@ -27,28 +27,28 @@ const rule: Rule.RuleModule = {
       return {};
     }
     return {
-      'CallExpression': (node: any) => {
+      CallExpression: (node: any) => {
         if (skipFunctions.includes(node.callee.name)) {
           return;
         }
         if (!isInScope(node)) {
           context.report({
             node: node,
-            message: `Call expressions at the top-level should be avoided.`
+            message: `Call expressions at the top-level should be avoided.`,
           });
         }
-      }
+      },
     };
-  }
+  },
 };
 
 const isInScope = (n: any): boolean => {
   const type = n.type;
   if (
-    type === 'ArrowFunctionExpression' ||
-    type === 'FunctionDeclaration' ||
-    type === 'ClassDeclaration' ||
-    type === 'ExportNamedDeclaration'
+    type === "ArrowFunctionExpression" ||
+    type === "FunctionDeclaration" ||
+    type === "ClassDeclaration" ||
+    type === "ExportNamedDeclaration"
   ) {
     return true;
   }
@@ -57,9 +57,8 @@ const isInScope = (n: any): boolean => {
     return isInScope(n);
   }
   return false;
-}
+};
 
-const DEFAULTS = ['describe', 'test', 'bind', 'createStore'];
+const DEFAULTS = ["describe", "test", "bind", "createStore"];
 
 export default rule;
-

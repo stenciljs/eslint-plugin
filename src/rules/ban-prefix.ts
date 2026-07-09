@@ -1,26 +1,26 @@
-import type { Rule } from 'eslint';
-import { getDecorator, parseDecorator, stencilComponentContext } from '../utils';
+import type { Rule } from "eslint";
+import { getDecorator, parseDecorator, stencilComponentContext } from "../utils";
 
-const DEFAULTS = ['stencil', 'stnl', 'st'];
+const DEFAULTS = ["stencil", "stnl", "st"];
 
 const rule: Rule.RuleModule = {
   meta: {
     docs: {
-      description: 'This rule catches usages banned prefix in component tag name.',
-      category: 'Possible Errors',
-      recommended: true
+      description: "This rule catches usages banned prefix in component tag name.",
+      category: "Possible Errors",
+      recommended: true,
     },
     schema: [
       {
-        type: 'array',
+        type: "array",
         items: {
-          type: 'string'
+          type: "string",
         },
         minLength: 1,
-        additionalProperties: false
-      }
+        additionalProperties: false,
+      },
     ],
-    type: 'problem'
+    type: "problem",
   },
 
   create(context): Rule.RuleListener {
@@ -28,8 +28,8 @@ const rule: Rule.RuleModule = {
 
     return {
       ...stencil.rules,
-      'ClassDeclaration': (node: any) => {
-        const component = getDecorator(node, 'Component');
+      ClassDeclaration: (node: any) => {
+        const component = getDecorator(node, "Component");
         if (!component) {
           return;
         }
@@ -44,12 +44,12 @@ const rule: Rule.RuleModule = {
         if (match) {
           context.report({
             node: node,
-            message: `The component with tag name ${tag} have a banned prefix.`
+            message: `The component with tag name ${tag} have a banned prefix.`,
           });
         }
-      }
+      },
     };
-  }
+  },
 };
 
 export default rule;

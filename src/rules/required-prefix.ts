@@ -1,21 +1,21 @@
-import type { Rule } from 'eslint';
-import { getDecorator, parseDecorator, stencilComponentContext } from '../utils';
+import type { Rule } from "eslint";
+import { getDecorator, parseDecorator, stencilComponentContext } from "../utils";
 
 const rule: Rule.RuleModule = {
   meta: {
     docs: {
-      description: 'This rule catches required prefix in component tag name.',
-      category: 'Possible Errors',
-      recommended: false
+      description: "This rule catches required prefix in component tag name.",
+      category: "Possible Errors",
+      recommended: false,
     },
     schema: [
       {
-        type: 'array',
+        type: "array",
         minLength: 1,
-        additionalProperties: false
-      }
+        additionalProperties: false,
+      },
     ],
-    type: 'layout'
+    type: "layout",
   },
 
   create(context): Rule.RuleListener {
@@ -23,8 +23,8 @@ const rule: Rule.RuleModule = {
 
     return {
       ...stencil.rules,
-      'ClassDeclaration': (node: any) => {
-        const component = getDecorator(node, 'Component');
+      ClassDeclaration: (node: any) => {
+        const component = getDecorator(node, "Component");
         if (!component) {
           return;
         }
@@ -35,12 +35,12 @@ const rule: Rule.RuleModule = {
         if (!match) {
           context.report({
             node: node,
-            message: `The component with tagName ${tag} have not a valid prefix.`
+            message: `The component with tagName ${tag} have not a valid prefix.`,
           });
         }
-      }
+      },
     };
-  }
+  },
 };
 
 export default rule;

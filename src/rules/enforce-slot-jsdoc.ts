@@ -1,15 +1,15 @@
-import { Rule } from 'eslint';
-import { getJSDocComments, stencilComponentContext } from '../utils';
+import { Rule } from "eslint";
+import { getJSDocComments, stencilComponentContext } from "../utils";
 
 const rule: Rule.RuleModule = {
   meta: {
     docs: {
-      description: 'Ensures slots are documented with JSDoc.',
-      category: 'Possible Errors',
+      description: "Ensures slots are documented with JSDoc.",
+      category: "Possible Errors",
       recommended: true,
     },
     schema: [],
-    type: 'problem',
+    type: "problem",
   },
 
   create(context): Rule.RuleListener {
@@ -18,7 +18,7 @@ const rule: Rule.RuleModule = {
 
     return {
       ...stencil.rules,
-      'ClassDeclaration:exit': (node: any) => {
+      "ClassDeclaration:exit": (node: any) => {
         if (stencil.isComponent()) {
           const jsDocs = getJSDocComments(node, context.sourceCode);
 
@@ -28,26 +28,36 @@ const rule: Rule.RuleModule = {
               : []
             ).map((tag: any) => {
               const c = tag.comment.trim();
-              if (!c || c === '-' || c.startsWith('- ')) return '<default>';
-              const idx = c.indexOf(' - ');
+              if (!c || c === "-" || c.startsWith("- ")) return "<default>";
+              const idx = c.indexOf(" - ");
               return idx === -1 ? c : c.slice(0, idx).trim();
-            })
+            }),
           );
 
-          const missingDocSlots = Array.from(implementedSlots).filter(slot => !documentedSlots.has(slot));
-          const nonImplementedSlots = Array.from(documentedSlots).filter(slot => !implementedSlots.has(slot));
+          const missingDocSlots = Array.from(implementedSlots).filter(
+            (slot) => !documentedSlots.has(slot),
+          );
+          const nonImplementedSlots = Array.from(documentedSlots).filter(
+            (slot) => !implementedSlots.has(slot),
+          );
 
-          missingDocSlots.forEach(slot => {
+          missingDocSlots.forEach((slot) => {
             context.report({
               node,
-              message: slot === "<default>" ? "The default @slot must be documented." : `The @slot '${slot}' must be documented.`,
+              message:
+                slot === "<default>"
+                  ? "The default @slot must be documented."
+                  : `The @slot '${slot}' must be documented.`,
             });
           });
 
-          nonImplementedSlots.forEach(slot => {
+          nonImplementedSlots.forEach((slot) => {
             context.report({
               node,
-              message: slot === "<default>" ? "The default @slot is not implemented." : `The @slot '${slot}' is not implemented.`,
+              message:
+                slot === "<default>"
+                  ? "The default @slot is not implemented."
+                  : `The @slot '${slot}' is not implemented.`,
             });
           });
         }
@@ -59,8 +69,11 @@ const rule: Rule.RuleModule = {
       JSXElement(node: any): void {
         if (node.openingElement.name.name !== "slot") return;
 
-        const nameAttribute = node.openingElement.attributes.find((attribute: any) => attribute.name.name === "name");
-        const slotName = nameAttribute && nameAttribute.value ? nameAttribute.value.value : "<default>";
+        const nameAttribute = node.openingElement.attributes.find(
+          (attribute: any) => attribute.name.name === "name",
+        );
+        const slotName =
+          nameAttribute && nameAttribute.value ? nameAttribute.value.value : "<default>";
         implementedSlots.add(slotName);
       },
     };

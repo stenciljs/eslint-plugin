@@ -6,23 +6,23 @@
 //------------------------------------------------------------------------------
 // Rule Definition
 //------------------------------------------------------------------------------
-import ts from 'typescript';
-import type { Rule } from 'eslint';
-import { stencilComponentContext } from '../utils';
+import ts from "typescript";
+import type { Rule } from "eslint";
+import { stencilComponentContext } from "../utils";
 
 const rule: Rule.RuleModule = {
   meta: {
     docs: {
-      description: 'This rule catches Stencil Prop names that share names of Global HTML Attributes.',
-      category: 'Possible Errors',
-      recommended: true
+      description:
+        "This rule catches Stencil Prop names that share names of Global HTML Attributes.",
+      category: "Possible Errors",
+      recommended: true,
     },
     schema: [],
-    type: 'problem'
+    type: "problem",
   },
 
   create(context): Rule.RuleListener {
-
     //----------------------------------------------------------------------
     // Public
     //----------------------------------------------------------------------
@@ -36,21 +36,23 @@ const rule: Rule.RuleModule = {
 
     return {
       ...stencil.rules,
-      'MethodDefinition[kind=method][key.name=render] ReturnStatement': (node: any) => {
+      "MethodDefinition[kind=method][key.name=render] ReturnStatement": (node: any) => {
         if (!stencil.isComponent()) {
           return;
         }
-        const originalNode = parserServices.esTreeNodeToTSNodeMap.get(node.argument) as ts.MethodDeclaration;
+        const originalNode = parserServices.esTreeNodeToTSNodeMap.get(
+          node.argument,
+        ) as ts.MethodDeclaration;
         const type = typeChecker.getTypeAtLocation(originalNode);
-        if (type && type.symbol && type.symbol.escapedName === 'Array') {
+        if (type && type.symbol && type.symbol.escapedName === "Array") {
           context.report({
             node: node,
-            message: `Avoid returning an array in the render() function, use <Host> instead.`
+            message: `Avoid returning an array in the render() function, use <Host> instead.`,
           });
         }
-      }
+      },
     };
-  }
+  },
 };
 
 export default rule;

@@ -14,7 +14,6 @@ All of it can be set to a string, which must be one of the following values:
 A member is considered “multiline” if its declaration is on a line after the last decorator.
 If decorators are composed (multiple decorators for a single declaration), "multiline" requires each decorator to be on its own line.
 
-
 ### Config examples
 
 ```json
