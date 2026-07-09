@@ -4,12 +4,13 @@
   "description": "ESLint rules specific to Stencil JS projects.",
   "keywords": [
     "eslint",
-    "eslintplugin",
     "eslint-plugin",
+    "eslintplugin",
     "stencil",
-    "stencileslint",
-    "stencil eslint"
+    "stencil eslint",
+    "stencileslint"
   ],
+  "license": "MIT",
   "contributors": [
     "Tom Chinery <tom.chinery@addtoevent.co.uk>",
     "Jack Woodward <jack@addtoevent.co.uk>",
@@ -17,35 +18,35 @@
     "d0whc3r <d0whc3r@gmail.com>",
     "Christian Bromann <christian.bromann@outsystems.com>"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stenciljs/eslint-plugin.git"
+  },
+  "files": [
+    "dist"
+  ],
   "type": "module",
   "main": "dist/index.js",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "import": "./dist/index.js"
     }
   },
-  "files": [
-    "dist"
-  ],
   "scripts": {
     "build": "rolldown --config rolldown.config.ts",
     "test": "vitest --run",
-    "version": "npm run build",
-    "watch": "npm run build -- --watch"
+    "lint": "oxlint .",
+    "lint:fix": "oxlint . --fix",
+    "format": "oxfmt .",
+    "format:check": "oxfmt --check .",
+    "version": "pnpm run build",
+    "watch": "pnpm run build -- --watch"
   },
   "dependencies": {
     "eslint-utils": "^3.0.0",
     "jsdom": "^27.0.1",
     "tsutils": "^3.21.0"
-  },
-  "peerDependencies": {
-    "@typescript-eslint/eslint-plugin": "^7.0.0 || ^8.0.0",
-    "@typescript-eslint/parser": "^7.0.0 || ^8.0.0",
-    "eslint": "^8.0.0 || ^9.0.0 || ^10.0.0",
-    "eslint-plugin-react": "^7.37.4",
-    "typescript": "^4.9.4 || ^5.0.0"
   },
   "devDependencies": {
     "@types/eslint": "9.6.1",
@@ -58,17 +59,22 @@
     "@vitest/coverage-v8": "^4.0.5",
     "eslint": "^9.38.0",
     "eslint-plugin-react": "^7.37.5",
+    "oxfmt": "^0.58.0",
+    "oxlint": "^1.73.0",
     "rolldown": "^1.0.0-beta.27",
     "rolldown-plugin-dts": "^0.25.2",
     "typescript": "^5.9.3",
     "vitest": "^4.0.5"
   },
+  "peerDependencies": {
+    "@typescript-eslint/eslint-plugin": "^7.0.0 || ^8.0.0",
+    "@typescript-eslint/parser": "^7.0.0 || ^8.0.0",
+    "eslint": "^8.0.0 || ^9.0.0 || ^10.0.0",
+    "eslint-plugin-react": "^7.37.4",
+    "typescript": "^4.9.4 || ^5.0.0"
+  },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=22.0.0"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/stenciljs/eslint-plugin.git"
-  },
-  "license": "MIT"
+  "packageManager": "pnpm@11.10.0"
 }

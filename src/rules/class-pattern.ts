@@ -1,28 +1,28 @@
-import type { Rule } from 'eslint';
-import { getDecorator, parseDecorator, stencilComponentContext } from '../utils';
+import type { Rule } from "eslint";
+import { getDecorator, parseDecorator, stencilComponentContext } from "../utils";
 
 const rule: Rule.RuleModule = {
   meta: {
     docs: {
-      description: 'This rule catches usages of non valid class names.',
-      category: 'Possible Errors',
-      recommended: false
+      description: "This rule catches usages of non valid class names.",
+      category: "Possible Errors",
+      recommended: false,
     },
     schema: [
       {
-        type: 'object',
+        type: "object",
         properties: {
           pattern: {
-            type: 'string'
+            type: "string",
           },
           ignoreCase: {
-            type: 'boolean'
-          }
+            type: "boolean",
+          },
         },
-        additionalProperties: false
-      }],
-    type: 'problem'
-
+        additionalProperties: false,
+      },
+    ],
+    type: "problem",
   },
 
   create(context): Rule.RuleListener {
@@ -30,8 +30,8 @@ const rule: Rule.RuleModule = {
 
     return {
       ...stencil.rules,
-      'ClassDeclaration': (node: any) => {
-        const component = getDecorator(node, 'Component');
+      ClassDeclaration: (node: any) => {
+        const component = getDecorator(node, "Component");
         const options = context.options[0];
         const { pattern, ignoreCase } = options || {};
         if (!component || !options || !pattern) {
@@ -41,7 +41,7 @@ const rule: Rule.RuleModule = {
         if (!className) {
           return;
         }
-        const regExp = new RegExp(pattern, ignoreCase ? 'i' : undefined);
+        const regExp = new RegExp(pattern, ignoreCase ? "i" : undefined);
 
         if (!regExp.test(className)) {
           const [opts] = parseDecorator(component);
@@ -50,12 +50,12 @@ const rule: Rule.RuleModule = {
           }
           context.report({
             node: node,
-            message: `The class name in component with tag name ${opts.tag} is not valid (${regExp}).`
+            message: `The class name in component with tag name ${opts.tag} is not valid (${regExp}).`,
           });
         }
-      }
+      },
     };
-  }
+  },
 };
 
 export default rule;

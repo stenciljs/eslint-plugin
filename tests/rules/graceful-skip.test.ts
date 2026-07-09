@@ -1,10 +1,10 @@
-import { test } from 'vitest';
+import { test } from "vitest";
 
-import { ruleTesterNoTypeInfo } from './rule-tester-no-typeinfo';
-import asyncMethods from '../../src/rules/async-methods';
-import renderReturnsHost from '../../src/rules/render-returns-host';
-import singleExport from '../../src/rules/single-export';
-import strictBooleanConditions from '../../src/rules/strict-boolean-conditions';
+import { ruleTesterNoTypeInfo } from "./rule-tester-no-typeinfo";
+import asyncMethods from "../../src/rules/async-methods";
+import renderReturnsHost from "../../src/rules/render-returns-host";
+import singleExport from "../../src/rules/single-export";
+import strictBooleanConditions from "../../src/rules/strict-boolean-conditions";
 
 const stencilComponent = `
 export class MyComponent {
@@ -14,30 +14,30 @@ export class MyComponent {
 }
 `;
 
-test('async-methods skips gracefully without type info', () => {
-  ruleTesterNoTypeInfo.run('async-methods', asyncMethods, {
+test("async-methods skips gracefully without type info", () => {
+  ruleTesterNoTypeInfo.run("async-methods", asyncMethods, {
     valid: [{ code: stencilComponent }],
-    invalid: []
+    invalid: [],
   });
 });
 
-test('render-returns-host skips gracefully without type info', () => {
-  ruleTesterNoTypeInfo.run('render-returns-host', renderReturnsHost, {
+test("render-returns-host skips gracefully without type info", () => {
+  ruleTesterNoTypeInfo.run("render-returns-host", renderReturnsHost, {
     valid: [{ code: stencilComponent }],
-    invalid: []
+    invalid: [],
   });
 });
 
-test('single-export skips gracefully without type info', () => {
-  ruleTesterNoTypeInfo.run('single-export', singleExport, {
+test("single-export skips gracefully without type info", () => {
+  ruleTesterNoTypeInfo.run("single-export", singleExport, {
     valid: [{ code: stencilComponent }],
-    invalid: []
+    invalid: [],
   });
 });
 
-test('strict-boolean-conditions skips gracefully without type info', () => {
-  ruleTesterNoTypeInfo.run('strict-boolean-conditions', strictBooleanConditions, {
+test("strict-boolean-conditions skips gracefully without type info", () => {
+  ruleTesterNoTypeInfo.run("strict-boolean-conditions", strictBooleanConditions, {
     valid: [{ code: stencilComponent }],
-    invalid: []
+    invalid: [],
   });
 });

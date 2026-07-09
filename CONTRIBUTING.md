@@ -16,37 +16,41 @@ Thank you for your interest in contributing to the Stencil ESLint Plugin! This g
 
 ### Prerequisites
 
-- **Node.js**: >=22.13.1 (for development)
-- **npm**: Latest version recommended
+- **Node.js**: >=22.0.0 (Node 22 or 24)
+- **pnpm**: Latest version recommended
 - **TypeScript**: Knowledge of TypeScript is essential
 - **ESLint**: Understanding of ESLint rule development
 
 ### Getting Started
 
 1. **Fork and Clone**
+
    ```bash
    git clone https://github.com/YOUR_USERNAME/eslint-plugin.git
    cd eslint-plugin
    ```
 
 2. **Install Dependencies**
+
    ```bash
-   npm ci
+   pnpm install --frozen-lockfile
    ```
 
 3. **Build the Project**
+
    ```bash
-   npm run build
+   pnpm run build
    ```
 
 4. **Run Tests**
+
    ```bash
-   npm test
+   pnpm test
    ```
 
 5. **Watch Mode for Development**
    ```bash
-   npm run watch
+   pnpm run watch
    ```
 
 ## 📁 Project Structure
@@ -86,44 +90,44 @@ docs/                 # Rule documentation
 Create your rule file in `src/rules/your-rule-name.ts`:
 
 ```typescript
-import type { Rule } from 'eslint';
-import { stencilComponentContext } from '../utils';
+import type { Rule } from "eslint";
+import { stencilComponentContext } from "../utils";
 
 const rule: Rule.RuleModule = {
   meta: {
     docs: {
-      description: 'Brief description of what this rule does.',
-      category: 'Possible Errors', // or 'Best Practices', 'Stylistic Issues'
-      recommended: true // or false
+      description: "Brief description of what this rule does.",
+      category: "Possible Errors", // or 'Best Practices', 'Stylistic Issues'
+      recommended: true, // or false
     },
     schema: [], // JSON schema for rule options
-    type: 'problem', // 'problem', 'suggestion', or 'layout'
-    fixable: 'code' // Optional: 'code' or 'whitespace' if rule is auto-fixable
+    type: "problem", // 'problem', 'suggestion', or 'layout'
+    fixable: "code", // Optional: 'code' or 'whitespace' if rule is auto-fixable
   },
 
   create(context): Rule.RuleListener {
     const stencil = stencilComponentContext();
-    
+
     return {
       ...stencil.rules,
       // Your rule logic here
-      'SelectorNode': (node: any) => {
+      SelectorNode: (node: any) => {
         if (!stencil.isComponent()) {
           return;
         }
-        
+
         // Rule implementation
         context.report({
           node,
-          message: 'Your error message here',
+          message: "Your error message here",
           fix(fixer) {
             // Optional: provide auto-fix
-            return fixer.replaceText(node, 'corrected code');
-          }
+            return fixer.replaceText(node, "corrected code");
+          },
         });
-      }
+      },
     };
-  }
+  },
 };
 
 export default rule;
@@ -134,11 +138,11 @@ export default rule;
 Update `src/rules/index.ts`:
 
 ```typescript
-import yourRuleName from './your-rule-name';
+import yourRuleName from "./your-rule-name";
 
 export default {
   // ... existing rules
-  'your-rule-name': yourRuleName,
+  "your-rule-name": yourRuleName,
 };
 ```
 
@@ -204,34 +208,34 @@ Each rule should have comprehensive tests in `tests/rules/your-rule-name/`:
 ### Test Implementation
 
 ```typescript
-import path from 'node:path';
-import fs from 'node:fs';
-import { test } from 'vitest';
-import { ruleTester } from '../rule-tester';
-import rule from '../../../src/rules/your-rule-name';
+import path from "node:path";
+import fs from "node:fs";
+import { test } from "vitest";
+import { ruleTester } from "../rule-tester";
+import rule from "../../../src/rules/your-rule-name";
 
-test('your-rule-name', () => {
+test("your-rule-name", () => {
   const files = {
-    good: path.resolve(__dirname, 'your-rule-name.good.tsx'),
-    wrong: path.resolve(__dirname, 'your-rule-name.wrong.tsx'),
-    output: path.resolve(__dirname, 'your-rule-name.output.tsx') // if fixable
+    good: path.resolve(__dirname, "your-rule-name.good.tsx"),
+    wrong: path.resolve(__dirname, "your-rule-name.wrong.tsx"),
+    output: path.resolve(__dirname, "your-rule-name.output.tsx"), // if fixable
   };
 
-  ruleTester.run('your-rule-name', rule, {
+  ruleTester.run("your-rule-name", rule, {
     valid: [
       {
-        code: fs.readFileSync(files.good, 'utf8'),
-        filename: files.good
-      }
+        code: fs.readFileSync(files.good, "utf8"),
+        filename: files.good,
+      },
     ],
     invalid: [
       {
-        code: fs.readFileSync(files.wrong, 'utf8'),
+        code: fs.readFileSync(files.wrong, "utf8"),
         filename: files.wrong,
         errors: 1, // Expected number of errors
-        output: fs.readFileSync(files.output, 'utf8') // if fixable
-      }
-    ]
+        output: fs.readFileSync(files.output, "utf8"), // if fixable
+      },
+    ],
   });
 });
 ```
@@ -240,13 +244,13 @@ test('your-rule-name', () => {
 
 ```bash
 # Run all tests
-npm test
+pnpm test
 
 # Run tests with coverage
-npm test -- --coverage
+pnpm test -- --coverage
 
 # Run specific test
-npm test -- async-methods
+pnpm test -- async-methods
 ```
 
 The project enforces code coverage thresholds that must be maintained.
@@ -265,6 +269,7 @@ The project enforces code coverage thresholds that must be maintained.
 - Use meaningful variable and function names
 - Add JSDoc comments for complex logic
 - Use the Stencil utilities from `../utils` when possible
+- Run `pnpm run lint:fix` and `pnpm run format` before submitting (`pnpm run lint` / `pnpm run format:check` to check without fixing)
 
 ### Stencil-Specific Guidelines
 
@@ -277,6 +282,7 @@ The project enforces code coverage thresholds that must be maintained.
 ### Pull Request Process
 
 1. **Create a Branch**
+
    ```bash
    git checkout -b feature/your-rule-name
    # or
@@ -290,6 +296,7 @@ The project enforces code coverage thresholds that must be maintained.
    - Ensure tests pass and coverage meets requirements
 
 3. **Commit Your Changes**
+
    ```bash
    git add .
    git commit -m "feat: add your-rule-name rule"
@@ -305,13 +312,16 @@ The project enforces code coverage thresholds that must be maintained.
 ### PR Requirements
 
 ✅ **Required for all PRs:**
-- [ ] Tests pass (`npm test`)
-- [ ] Code builds successfully (`npm run build`)
+
+- [ ] Tests pass (`pnpm test`)
+- [ ] Code builds successfully (`pnpm run build`)
+- [ ] Lint and format checks pass (`pnpm run lint`, `pnpm run format:check`)
 - [ ] New rules include comprehensive tests
 - [ ] Documentation is updated (README.md, docs/, etc.)
 - [ ] Code follows existing patterns and style
 
 ✅ **For new rules:**
+
 - [ ] Rule implementation in `src/rules/`
 - [ ] Tests with good/wrong/output examples
 - [ ] Documentation in `docs/`
@@ -321,6 +331,7 @@ The project enforces code coverage thresholds that must be maintained.
 ### CI/CD
 
 The project uses GitHub Actions for:
+
 - **[Build & Test](https://github.com/stenciljs/eslint-plugin/blob/main/.github/workflows/main.yml)**: Runs on Node.js 20, 22, 24 across Ubuntu and Windows
 - **Coverage**: Ensures code coverage thresholds are met
 - **[Automated Releases](https://github.com/stenciljs/eslint-plugin/blob/main/.github/workflows/release.yml)**: Handles version bumping and npm publishing
@@ -356,6 +367,7 @@ Releases are handled through GitHub Actions and are restricted to maintainers.
 ### Dev Releases
 
 For testing purposes, maintainers can create dev releases:
+
 - Set "devRelease" to "yes" in the workflow
 - Creates a version like `1.1.0-dev.1677185104.7c87e34`
 - Published with `dev` tag on npm
@@ -373,4 +385,4 @@ Your contributions help make Stencil development better for everyone. Whether it
 
 ---
 
-For questions about this contributing guide, please open an issue or discussion in the repository. 
+For questions about this contributing guide, please open an issue or discussion in the repository.

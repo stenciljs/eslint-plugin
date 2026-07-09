@@ -12,7 +12,9 @@ An object containing:
 ### Config examples
 
 ```json
-{ "stencil/class-pattern": ["error", { "pattern": "^(?!NoStart).*Component$", "ignoreCase": true }] }
+{
+  "stencil/class-pattern": ["error", { "pattern": "^(?!NoStart).*Component$", "ignoreCase": true }]
+}
 ```
 
 ## Schema

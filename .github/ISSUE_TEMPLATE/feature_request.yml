@@ -1,6 +1,6 @@
 name: 💡 Feature Request
 description: Suggest an idea for Stencil ESLint
-title: 'feat: '
+title: "feat: "
 body:
   - type: checkboxes
     attributes:

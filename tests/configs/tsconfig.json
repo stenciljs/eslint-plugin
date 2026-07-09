@@ -6,15 +6,7 @@
     "experimentalDecorators": true,
     "jsx": "react",
     "jsxFactory": "h",
-    "lib": [
-      "es2017.intl",
-      "es5",
-      "dom",
-      "scripthost",
-      "es2017",
-      "es2019",
-      "es2022"
-    ],
+    "lib": ["es2017.intl", "es5", "dom", "scripthost", "es2017", "es2019", "es2022"],
     "module": "es2022",
     "moduleResolution": "node",
     "noImplicitAny": true,
@@ -25,8 +17,5 @@
     "strictNullChecks": true,
     "target": "es2022"
   },
-  "include": [
-    "../rules",
-    "types/jsx.d.ts"
-  ]
+  "include": ["../rules", "types/jsx.d.ts"]
 }

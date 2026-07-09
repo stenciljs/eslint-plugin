@@ -16,7 +16,7 @@
  */
 import * as ts from "typescript";
 
-import type { Rule } from 'eslint';
+import type { Rule } from "eslint";
 
 const OPTION_ALLOW_NULL_UNION = "allow-null-union";
 const OPTION_ALLOW_UNDEFINED_UNION = "allow-undefined-union";
@@ -35,27 +35,29 @@ const rule: Rule.RuleModule = {
       * Arguments to the \`!\`, \`&&\`, and \`||\` operators
       * The condition in a conditional expression (\`cond ? x : y\`)
       * Conditions for \`if\`, \`for\`, \`while\`, and \`do-while\` statements.`,
-      category: 'Possible Errors',
-      recommended: true
+      category: "Possible Errors",
+      recommended: true,
     },
-    schema: [{
-      type: "array",
-      items: {
-        type: "string",
-        enum: [
-          OPTION_ALLOW_NULL_UNION,
-          OPTION_ALLOW_UNDEFINED_UNION,
-          OPTION_ALLOW_STRING,
-          OPTION_ALLOW_ENUM,
-          OPTION_ALLOW_NUMBER,
-          OPTION_ALLOW_BOOLEAN_OR_UNDEFINED,
-          OPTION_ALLOW_ANY_RHS
-        ],
+    schema: [
+      {
+        type: "array",
+        items: {
+          type: "string",
+          enum: [
+            OPTION_ALLOW_NULL_UNION,
+            OPTION_ALLOW_UNDEFINED_UNION,
+            OPTION_ALLOW_STRING,
+            OPTION_ALLOW_ENUM,
+            OPTION_ALLOW_NUMBER,
+            OPTION_ALLOW_BOOLEAN_OR_UNDEFINED,
+            OPTION_ALLOW_ANY_RHS,
+          ],
+        },
+        minLength: 0,
+        maxLength: 5,
       },
-      minLength: 0,
-      maxLength: 5,
-    }],
-    type: 'problem'
+    ],
+    type: "problem",
   },
 
   create(context): Rule.RuleListener {
@@ -64,7 +66,11 @@ const rule: Rule.RuleModule = {
       return {};
     }
     const program = parserServices.program;
-    const rawOptions = context.options[0] || ['allow-null-union', 'allow-undefined-union', 'allow-boolean-or-undefined']
+    const rawOptions = context.options[0] || [
+      "allow-null-union",
+      "allow-undefined-union",
+      "allow-boolean-or-undefined",
+    ];
     const options = parseOptions(rawOptions, true);
     const checker = program.getTypeChecker() as ts.TypeChecker;
 
@@ -72,10 +78,7 @@ const rule: Rule.RuleModule = {
       ts.forEachChild(sourceFile, function cb(node: ts.Node): void {
         switch (node.kind) {
           case ts.SyntaxKind.PrefixUnaryExpression: {
-            const {
-              operator,
-              operand
-            } = node as ts.PrefixUnaryExpression;
+            const { operator, operand } = node as ts.PrefixUnaryExpression;
             if (operator === ts.SyntaxKind.ExclamationToken) {
               checkExpression(operand, node as ts.PrefixUnaryExpression);
             }
@@ -92,13 +95,14 @@ const rule: Rule.RuleModule = {
           }
 
           case ts.SyntaxKind.ConditionalExpression:
-            checkExpression((node as ts.ConditionalExpression).condition, node as ts.ConditionalExpression);
+            checkExpression(
+              (node as ts.ConditionalExpression).condition,
+              node as ts.ConditionalExpression,
+            );
             break;
 
           case ts.SyntaxKind.ForStatement: {
-            const {
-              condition
-            } = node as ts.ForStatement;
+            const { condition } = node as ts.ForStatement;
             if (condition !== undefined) {
               checkExpression(condition, node as ts.ForStatement);
             }
@@ -112,9 +116,11 @@ const rule: Rule.RuleModule = {
         const type = checker.getTypeAtLocation(node);
         const failure = getTypeFailure(type, options);
         if (failure !== undefined) {
-          if (failure === TypeFailure.AlwaysTruthy &&
+          if (
+            failure === TypeFailure.AlwaysTruthy &&
             !options.strictNullChecks &&
-            (options.allowNullUnion || options.allowUndefinedUnion)) {
+            (options.allowNullUnion || options.allowUndefinedUnion)
+          ) {
             // OK; It might be null/undefined.
             return;
           }
@@ -122,21 +128,19 @@ const rule: Rule.RuleModule = {
           context.report({
             node: originalNode,
             message: showFailure(location, failure, isUnionType(type), options),
-          })
+          });
         }
       }
     }
 
     return {
-      'Program': (node: any) => {
+      Program: (node: any) => {
         const sourceFile = parserServices.esTreeNodeToTSNodeMap.get(node);
         walk(sourceFile);
-      }
+      },
     };
-  }
+  },
 };
-
-
 
 interface Options {
   strictNullChecks: boolean;
@@ -183,7 +187,9 @@ function getTypeFailure(type: ts.Type, options: Options): TypeFailure | undefine
     case true:
       // Allow 'any'. Allow 'true' itself, but not any other always-truthy type.
       // tslint:disable-next-line no-bitwise
-      return isTypeFlagSet(type, ts.TypeFlags.Any | ts.TypeFlags.BooleanLiteral) ? undefined : TypeFailure.AlwaysTruthy;
+      return isTypeFlagSet(type, ts.TypeFlags.Any | ts.TypeFlags.BooleanLiteral)
+        ? undefined
+        : TypeFailure.AlwaysTruthy;
     case false:
       // Allow 'false' itself, but not any other always-falsy type
       return isTypeFlagSet(type, ts.TypeFlags.BooleanLiteral) ? undefined : TypeFailure.AlwaysFalsy;
@@ -199,7 +205,8 @@ function isBooleanUndefined(type: ts.UnionType): boolean | undefined {
       isTruthy = true;
     } else if (isTypeFlagSet(ty, ts.TypeFlags.BooleanLiteral)) {
       isTruthy = isTruthy || (ty as ts.IntrinsicType).intrinsicName === "true";
-    } else if (!isTypeFlagSet(ty, ts.TypeFlags.Void | ts.TypeFlags.Undefined)) { // tslint:disable-line:no-bitwise
+    } else if (!isTypeFlagSet(ty, ts.TypeFlags.Void | ts.TypeFlags.Undefined)) {
+      // tslint:disable-line:no-bitwise
       return undefined;
     }
   }
@@ -227,7 +234,11 @@ function handleUnion(type: ts.UnionType, options: Options): TypeFailure | undefi
 }
 
 /** Fails if a kind of falsiness is not allowed. */
-function failureForKind(kind: TypeKind, isInUnion: boolean, options: Options): TypeFailure | undefined {
+function failureForKind(
+  kind: TypeKind,
+  isInUnion: boolean,
+  options: Options,
+): TypeFailure | undefined {
   switch (kind) {
     case TypeKind.String:
     case TypeKind.FalseStringLiteral:
@@ -248,14 +259,14 @@ function failureForKind(kind: TypeKind, isInUnion: boolean, options: Options): T
   }
 }
 
-export type Location = |
-  ts.PrefixUnaryExpression |
-  ts.IfStatement |
-  ts.WhileStatement |
-  ts.DoStatement |
-  ts.ForStatement |
-  ts.ConditionalExpression |
-  ts.BinaryExpression;
+export type Location =
+  | ts.PrefixUnaryExpression
+  | ts.IfStatement
+  | ts.WhileStatement
+  | ts.DoStatement
+  | ts.ForStatement
+  | ts.ConditionalExpression
+  | ts.BinaryExpression;
 
 export const enum TypeFailure {
   AlwaysTruthy,
@@ -266,7 +277,7 @@ export const enum TypeFailure {
   Undefined,
   Enum,
   Mixes,
-  Promise
+  Promise,
 }
 
 const enum TypeKind {
@@ -280,7 +291,7 @@ const enum TypeKind {
   Undefined,
   Enum,
   AlwaysTruthy,
-  Promise
+  Promise,
 }
 
 /** Divides a type into always true, always false, or unknown. */
@@ -306,17 +317,25 @@ function triState(kind: TypeKind): boolean | undefined {
 }
 
 function getKind(type: ts.Type): TypeKind {
-  return is(ts.TypeFlags.StringLike) ? TypeKind.String :
-    is(ts.TypeFlags.NumberLike) ? TypeKind.Number :
-    is(ts.TypeFlags.Boolean) ? TypeKind.Boolean :
-    isObject('Promise') ? TypeKind.Promise :
-    is(ts.TypeFlags.Null) ? TypeKind.Null :
-    is(ts.TypeFlags.Undefined | ts.TypeFlags.Void) ? TypeKind.Undefined // tslint:disable-line:no-bitwise
-    :
-    is(ts.TypeFlags.EnumLike) ? TypeKind.Enum :
-    is(ts.TypeFlags.BooleanLiteral) ?
-    ((type as ts.IntrinsicType).intrinsicName === "true" ? TypeKind.AlwaysTruthy : TypeKind.FalseBooleanLiteral) :
-    TypeKind.AlwaysTruthy;
+  return is(ts.TypeFlags.StringLike)
+    ? TypeKind.String
+    : is(ts.TypeFlags.NumberLike)
+      ? TypeKind.Number
+      : is(ts.TypeFlags.Boolean)
+        ? TypeKind.Boolean
+        : isObject("Promise")
+          ? TypeKind.Promise
+          : is(ts.TypeFlags.Null)
+            ? TypeKind.Null
+            : is(ts.TypeFlags.Undefined | ts.TypeFlags.Void)
+              ? TypeKind.Undefined // tslint:disable-line:no-bitwise
+              : is(ts.TypeFlags.EnumLike)
+                ? TypeKind.Enum
+                : is(ts.TypeFlags.BooleanLiteral)
+                  ? (type as ts.IntrinsicType).intrinsicName === "true"
+                    ? TypeKind.AlwaysTruthy
+                    : TypeKind.FalseBooleanLiteral
+                  : TypeKind.AlwaysTruthy;
 
   function is(flags: ts.TypeFlags) {
     return isTypeFlagSet(type, flags);
@@ -324,10 +343,9 @@ function getKind(type: ts.Type): TypeKind {
 
   function isObject(name: string) {
     const symbol = type.getSymbol();
-    return (symbol && symbol.getName() === name)
+    return symbol && symbol.getName() === name;
   }
 }
-
 
 function binaryBooleanExpressionKind(node: ts.BinaryExpression): "&&" | "||" | undefined {
   switch (node.operatorToken.kind) {
@@ -378,11 +396,17 @@ function showLocation(n: Location): string {
   }
 }
 
-function showFailure(location: Location, ty: TypeFailure, unionType: boolean, options: Options): string {
+function showFailure(
+  location: Location,
+  ty: TypeFailure,
+  unionType: boolean,
+  options: Options,
+): string {
   const expectedTypes = showExpectedTypes(options);
-  const expected = expectedTypes.length === 1 ?
-    `Only ${expectedTypes[0]}s are allowed` :
-    `Allowed types are ${stringOr(expectedTypes)}`;
+  const expected =
+    expectedTypes.length === 1
+      ? `Only ${expectedTypes[0]}s are allowed`
+      : `Allowed types are ${stringOr(expectedTypes)}`;
   const tyFail = showTypeFailure(ty, unionType, options.strictNullChecks);
   return `This type is not allowed in the ${showLocation(location)} because it ${tyFail}. ${expected}.`;
 }
@@ -414,10 +438,10 @@ function showTypeFailure(ty: TypeFailure, unionType: boolean, strictNullChecks: 
   const is = unionType ? "could be" : "is";
   switch (ty) {
     case TypeFailure.AlwaysTruthy:
-      return strictNullChecks ?
-        "is always truthy" :
-        "is always truthy. It may be null/undefined, but neither " +
-        `'${OPTION_ALLOW_NULL_UNION}' nor '${OPTION_ALLOW_UNDEFINED_UNION}' is set`;
+      return strictNullChecks
+        ? "is always truthy"
+        : "is always truthy. It may be null/undefined, but neither " +
+            `'${OPTION_ALLOW_NULL_UNION}' nor '${OPTION_ALLOW_UNDEFINED_UNION}' is set`;
     case TypeFailure.AlwaysFalsy:
       return "is always falsy";
     case TypeFailure.String:

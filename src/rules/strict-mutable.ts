@@ -1,5 +1,5 @@
-import type { Rule } from 'eslint';
-import { parseDecorator, stencilComponentContext } from '../utils';
+import type { Rule } from "eslint";
+import { parseDecorator, stencilComponentContext } from "../utils";
 
 const mutableProps = new Map<string, any>();
 const mutableAssigned = new Set<string>();
@@ -7,12 +7,12 @@ const mutableAssigned = new Set<string>();
 const rule: Rule.RuleModule = {
   meta: {
     docs: {
-      description: 'This rule catches mutable Props that not need to be mutable.',
-      category: 'Possible Errors',
-      recommended: true
+      description: "This rule catches mutable Props that not need to be mutable.",
+      category: "Possible Errors",
+      recommended: true,
     },
     schema: [],
-    type: 'layout',
+    type: "layout",
   },
 
   create(context): Rule.RuleListener {
@@ -23,7 +23,7 @@ const rule: Rule.RuleModule = {
         return;
       }
       const parsed = parseDecorator(node);
-      const mutable = parsed && parsed.length && parsed[0].mutable || false;
+      const mutable = (parsed && parsed.length && parsed[0].mutable) || false;
 
       if (mutable) {
         const varName = node.parent.key.name;
@@ -39,12 +39,12 @@ const rule: Rule.RuleModule = {
       mutableAssigned.add(propName);
     }
 
-    stencil.rules["ClassDeclaration:exit"]
     return {
-      'ClassDeclaration': stencil.rules.ClassDeclaration,
-      'PropertyDefinition > Decorator[expression.callee.name=Prop]': getMutable,
-      'AssignmentExpression[left.object.type=ThisExpression][left.property.type=Identifier]': checkAssigment,
-      'ClassDeclaration:exit': (node: any) => {
+      ClassDeclaration: stencil.rules.ClassDeclaration,
+      "PropertyDefinition > Decorator[expression.callee.name=Prop]": getMutable,
+      "AssignmentExpression[left.object.type=ThisExpression][left.property.type=Identifier]":
+        checkAssigment,
+      "ClassDeclaration:exit": (node: any) => {
         const isCmp = stencil.isComponent();
         stencil.rules["ClassDeclaration:exit"](node);
 
@@ -60,9 +60,9 @@ const rule: Rule.RuleModule = {
           mutableAssigned.clear();
           mutableProps.clear();
         }
-      }
+      },
     };
-  }
+  },
 };
 
 export default rule;

@@ -1,4 +1,4 @@
-import type { Linter } from 'eslint';
+import type { Linter } from "eslint";
 
 export default {
   extends: [
@@ -8,8 +8,8 @@ export default {
     "plugin:stencil/recommended",
   ],
   rules: {
-    'stencil/ban-default-true': 2,
-    'stencil/strict-boolean-conditions': 2,
+    "stencil/ban-default-true": 2,
+    "stencil/strict-boolean-conditions": 2,
 
     // Resets
     "@typescript-eslint/camelcase": 0,
@@ -23,7 +23,6 @@ export default {
     "@typescript-eslint/no-explicit-any": 0,
     "no-constant-condition": 0,
 
-
     // Best practices
     "no-shadow": 2,
     "no-var": 2,
@@ -32,18 +31,21 @@ export default {
     "no-duplicate-imports": 2,
 
     // General formatting
-    "indent": [2, 2],
+    indent: [2, 2],
     "no-trailing-spaces": 2,
-    "curly": [2, "all"],
+    curly: [2, "all"],
     "comma-spacing": 2,
     "comma-style": 2,
     "computed-property-spacing": 2,
-    "comma-dangle": [2, {
-      'objects': 'always-multiline'
-    }],
-    "func-style": [2, "expression", { "allowArrowFunctions": true }],
+    "comma-dangle": [
+      2,
+      {
+        objects: "always-multiline",
+      },
+    ],
+    "func-style": [2, "expression", { allowArrowFunctions: true }],
     "multiline-ternary": [2, "always-multiline"],
-    "operator-linebreak": [2, "after", { "overrides": { "?": "before", ":": "before" } }],
+    "operator-linebreak": [2, "after", { overrides: { "?": "before", ":": "before" } }],
     "linebreak-style": 2,
     "space-in-parens": 2,
     "@typescript-eslint/semi": 2,
@@ -54,11 +56,11 @@ export default {
     "react/jsx-closing-tag-location": 2,
     "react/jsx-curly-newline": [2, "never"],
     "react/jsx-closing-bracket-location": 2,
-    "react/jsx-curly-spacing": [2, {"when": "never", "children": true}],
+    "react/jsx-curly-spacing": [2, { when: "never", children: true }],
     "react/jsx-boolean-value": [2, "never"],
     "react/jsx-child-element-spacing": 2,
     "react/jsx-indent-props": [2, "first"],
     "react/jsx-props-no-multi-spaces": 2,
     "react/jsx-equals-spacing": [2, "never"],
-  }
+  },
 } satisfies Linter.BaseConfig;
