@@ -8,9 +8,9 @@ import rule from "../../../src/rules/dependency-suggestions";
 
 test("dependency-suggestions", () => {
   const fixtures = {
-    good: path.resolve(__dirname, "dependency-suggestions.good.ts"),
-    bad: path.resolve(__dirname, "dependency-suggestions.bad.ts"),
-    custom: path.resolve(__dirname, "dependency-suggestions.custom.ts"),
+    good: path.resolve(import.meta.dirname, "dependency-suggestions.good.ts"),
+    bad: path.resolve(import.meta.dirname, "dependency-suggestions.bad.ts"),
+    custom: path.resolve(import.meta.dirname, "dependency-suggestions.custom.ts"),
   };
 
   ruleTester.run("dependency-suggestions", rule, {

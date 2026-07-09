@@ -8,8 +8,8 @@ import rule from "../../../src/rules/reserved-member-names";
 
 test("reserved-member-names", () => {
   const files = {
-    good: path.resolve(__dirname, "reserved-member-names.good.tsx"),
-    wrong: path.resolve(__dirname, "reserved-member-names.wrong.tsx"),
+    good: path.resolve(import.meta.dirname, "reserved-member-names.good.tsx"),
+    wrong: path.resolve(import.meta.dirname, "reserved-member-names.wrong.tsx"),
   };
   ruleTester.run("reserved-member-names", rule, {
     valid: [

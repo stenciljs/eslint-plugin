@@ -8,8 +8,8 @@ import rule from "../../../src/rules/ban-default-true";
 
 test("ban-default-true", () => {
   const files = {
-    good: path.resolve(__dirname, "ban-default-true.good.tsx"),
-    wrong: path.resolve(__dirname, "ban-default-true.wrong.tsx"),
+    good: path.resolve(import.meta.dirname, "ban-default-true.good.tsx"),
+    wrong: path.resolve(import.meta.dirname, "ban-default-true.wrong.tsx"),
   };
   const validCode = fs.readFileSync(files.good, "utf8");
 

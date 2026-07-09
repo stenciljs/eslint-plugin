@@ -8,11 +8,11 @@ import { ruleTester } from "../rule-tester";
 
 test("stencil rules", () => {
   const files = {
-    good: path.resolve(__dirname, "enforce-slot-jsdoc.good.tsx"),
-    wrong: path.resolve(__dirname, "enforce-slot-jsdoc.wrong.tsx"),
-    noJsdoc: path.resolve(__dirname, "enforce-slot-jsdoc.no-jsdoc.tsx"),
-    hyphenated: path.resolve(__dirname, "enforce-slot-jsdoc.hyphenated.tsx"),
-    hyphenatedWrong: path.resolve(__dirname, "enforce-slot-jsdoc.hyphenated-wrong.tsx"),
+    good: path.resolve(import.meta.dirname, "enforce-slot-jsdoc.good.tsx"),
+    wrong: path.resolve(import.meta.dirname, "enforce-slot-jsdoc.wrong.tsx"),
+    noJsdoc: path.resolve(import.meta.dirname, "enforce-slot-jsdoc.no-jsdoc.tsx"),
+    hyphenated: path.resolve(import.meta.dirname, "enforce-slot-jsdoc.hyphenated.tsx"),
+    hyphenatedWrong: path.resolve(import.meta.dirname, "enforce-slot-jsdoc.hyphenated-wrong.tsx"),
   };
 
   ruleTester.run("enforce-slot-jsdoc", rule, {

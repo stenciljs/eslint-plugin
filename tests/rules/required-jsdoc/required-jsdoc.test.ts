@@ -8,8 +8,8 @@ import rule from "../../../src/rules/required-jsdoc";
 
 test("required-jsdoc", () => {
   const files = {
-    good: path.resolve(__dirname, "required-jsdoc.good.tsx"),
-    wrong: path.resolve(__dirname, "required-jsdoc.wrong.tsx"),
+    good: path.resolve(import.meta.dirname, "required-jsdoc.good.tsx"),
+    wrong: path.resolve(import.meta.dirname, "required-jsdoc.wrong.tsx"),
   };
   ruleTester.run("required-jsdoc", rule, {
     valid: [

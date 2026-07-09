@@ -8,8 +8,8 @@ import rule from "../../../src/rules/decorators-style";
 
 test("decorators-style", () => {
   const files = {
-    good: path.resolve(__dirname, "decorators-style.good.tsx"),
-    wrong: path.resolve(__dirname, "decorators-style.wrong.tsx"),
+    good: path.resolve(import.meta.dirname, "decorators-style.good.tsx"),
+    wrong: path.resolve(import.meta.dirname, "decorators-style.wrong.tsx"),
   };
   const options = [
     {
@@ -67,7 +67,7 @@ export class SampleTag {
   }
 }`,
         options,
-        filename: path.resolve(__dirname, "decorators-style.good.tsx"),
+        filename: path.resolve(import.meta.dirname, "decorators-style.good.tsx"),
       },
     ],
 
@@ -87,7 +87,7 @@ export class SampleTag {
   }
 }`,
         options,
-        filename: path.resolve(__dirname, "decorators-style.wrong.tsx"),
+        filename: path.resolve(import.meta.dirname, "decorators-style.wrong.tsx"),
         errors: 1, // @Listen flagged; @Watch has newline after it (member on next line)
       },
     ],

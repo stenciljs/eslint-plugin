@@ -8,11 +8,11 @@ import rule from "../../../src/rules/ban-side-effects";
 
 test("ban-side-effects", () => {
   const fixtures = {
-    good: path.resolve(__dirname, "ban-side-effects.good.ts"),
-    bad: path.resolve(__dirname, "ban-side-effects.bad.ts"),
-    spec: path.resolve(__dirname, "ban-side-effects.spec.ts"),
-    e2e: path.resolve(__dirname, "ban-side-effects.e2e.ts"),
-    createStore: path.resolve(__dirname, "ban-side-effects.create-store.ts"),
+    good: path.resolve(import.meta.dirname, "ban-side-effects.good.ts"),
+    bad: path.resolve(import.meta.dirname, "ban-side-effects.bad.ts"),
+    spec: path.resolve(import.meta.dirname, "ban-side-effects.spec.ts"),
+    e2e: path.resolve(import.meta.dirname, "ban-side-effects.e2e.ts"),
+    createStore: path.resolve(import.meta.dirname, "ban-side-effects.create-store.ts"),
   };
 
   ruleTester.run("ban-side-effects", rule, {

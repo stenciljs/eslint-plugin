@@ -8,8 +8,8 @@ import rule from "../../../src/rules/props-must-be-public";
 
 test("props-must-be-public", () => {
   const files = {
-    good: path.resolve(__dirname, "props-must-be-public.good.tsx"),
-    wrong: path.resolve(__dirname, "props-must-be-public.wrong.tsx"),
+    good: path.resolve(import.meta.dirname, "props-must-be-public.good.tsx"),
+    wrong: path.resolve(import.meta.dirname, "props-must-be-public.wrong.tsx"),
   };
   ruleTester.run("props-must-be-public", rule, {
     valid: [

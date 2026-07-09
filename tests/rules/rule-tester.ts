@@ -12,7 +12,7 @@ export const ruleTester = new RuleTester({
       ecmaFeatures: {
         jsx: true,
       },
-      project: path.resolve(__dirname, "..", "configs", "tsconfig.json"),
+      project: path.resolve(import.meta.dirname, "..", "configs", "tsconfig.json"),
       extraFileExtensions: [".ts", ".tsx"],
       env: {
         browser: true,
