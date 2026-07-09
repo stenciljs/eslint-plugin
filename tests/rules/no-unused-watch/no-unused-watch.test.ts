@@ -8,8 +8,8 @@ import rule from "../../../src/rules/no-unused-watch";
 
 test("no-unused-watch", () => {
   const files = {
-    good: path.resolve(__dirname, "no-unused-watch.good.tsx"),
-    wrong: path.resolve(__dirname, "no-unused-watch.wrong.tsx"),
+    good: path.resolve(import.meta.dirname, "no-unused-watch.good.tsx"),
+    wrong: path.resolve(import.meta.dirname, "no-unused-watch.wrong.tsx"),
   };
   ruleTester.run("no-unused-watch", rule, {
     valid: [

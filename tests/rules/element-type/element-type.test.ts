@@ -8,10 +8,10 @@ import rule from "../../../src/rules/element-type";
 
 test("element-type", () => {
   const files = {
-    good: path.resolve(__dirname, "element-type.good.tsx"),
-    wrong: path.resolve(__dirname, "element-type.wrong.tsx"),
-    explicitAny: path.resolve(__dirname, "element-type.explicit-any.tsx"),
-    missingTypeAnnotation: path.resolve(__dirname, "element-type.missing-type-annotation.tsx"),
+    good: path.resolve(import.meta.dirname, "element-type.good.tsx"),
+    wrong: path.resolve(import.meta.dirname, "element-type.wrong.tsx"),
+    explicitAny: path.resolve(import.meta.dirname, "element-type.explicit-any.tsx"),
+    missingTypeAnnotation: path.resolve(import.meta.dirname, "element-type.missing-type-annotation.tsx"),
   };
   const validCode = fs.readFileSync(files.good, "utf8");
 

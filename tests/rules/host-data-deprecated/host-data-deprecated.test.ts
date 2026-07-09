@@ -8,8 +8,8 @@ import { ruleTester } from "../rule-tester";
 
 test("host-data-deprecated", () => {
   const files = {
-    good: path.resolve(__dirname, "host-data-deprecated.good.tsx"),
-    wrong: path.resolve(__dirname, "host-data-deprecated.wrong.tsx"),
+    good: path.resolve(import.meta.dirname, "host-data-deprecated.good.tsx"),
+    wrong: path.resolve(import.meta.dirname, "host-data-deprecated.wrong.tsx"),
   };
   ruleTester.run("host-data-deprecated", rule, {
     valid: [

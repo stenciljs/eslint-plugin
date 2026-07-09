@@ -8,8 +8,8 @@ import rule from "../../../src/rules/prefer-vdom-listener";
 
 test("prefer-vdom-listener", () => {
   const files = {
-    good: path.resolve(__dirname, "prefer-vdom-listener.good.tsx"),
-    wrong: path.resolve(__dirname, "prefer-vdom-listener.wrong.tsx"),
+    good: path.resolve(import.meta.dirname, "prefer-vdom-listener.good.tsx"),
+    wrong: path.resolve(import.meta.dirname, "prefer-vdom-listener.wrong.tsx"),
   };
   ruleTester.run("prefer-vdom-listener", rule, {
     valid: [

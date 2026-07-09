@@ -8,8 +8,8 @@ import rule from "../../../src/rules/decorators-context";
 
 test("decorators-context", () => {
   const files = {
-    good: path.resolve(__dirname, "decorators-context.good.tsx"),
-    wrong: path.resolve(__dirname, "decorators-context.wrong.tsx"),
+    good: path.resolve(import.meta.dirname, "decorators-context.good.tsx"),
+    wrong: path.resolve(import.meta.dirname, "decorators-context.wrong.tsx"),
   };
   ruleTester.run("decorators-context", rule, {
     valid: [

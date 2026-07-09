@@ -8,8 +8,8 @@ import rule from "../../../src/rules/ban-prefix";
 
 test("ban-prefix", () => {
   const files = {
-    good: path.resolve(__dirname, "ban-prefix.good.tsx"),
-    wrong: path.resolve(__dirname, "ban-prefix.wrong.tsx"),
+    good: path.resolve(import.meta.dirname, "ban-prefix.good.tsx"),
+    wrong: path.resolve(import.meta.dirname, "ban-prefix.wrong.tsx"),
   };
   // const options = [['stencil', 'stnl']];
   ruleTester.run("ban-prefix", rule, {

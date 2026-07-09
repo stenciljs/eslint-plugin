@@ -8,9 +8,9 @@ import rule from "../../../src/rules/own-methods-must-be-private";
 
 test("own-methods-must-be-private", () => {
   const files = {
-    good: path.resolve(__dirname, "own-methods-must-be-private.good.tsx"),
-    wrong: path.resolve(__dirname, "own-methods-must-be-private.wrong.tsx"),
-    output: path.resolve(__dirname, "own-methods-must-be-private.output.tsx"),
+    good: path.resolve(import.meta.dirname, "own-methods-must-be-private.good.tsx"),
+    wrong: path.resolve(import.meta.dirname, "own-methods-must-be-private.wrong.tsx"),
+    output: path.resolve(import.meta.dirname, "own-methods-must-be-private.output.tsx"),
   };
   ruleTester.run("own-methods-must-be-private", rule, {
     valid: [

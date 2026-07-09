@@ -8,8 +8,8 @@ import rule from "../../../src/rules/class-pattern";
 
 test("class-pattern", () => {
   const files = {
-    good: path.resolve(__dirname, "class-pattern.good.tsx"),
-    wrong: path.resolve(__dirname, "class-pattern.wrong.tsx"),
+    good: path.resolve(import.meta.dirname, "class-pattern.good.tsx"),
+    wrong: path.resolve(import.meta.dirname, "class-pattern.wrong.tsx"),
   };
   const options = [{ pattern: "^(?!NoStart).*Component$", ignoreCase: true }];
   ruleTester.run("class-pattern", rule, {

@@ -8,8 +8,8 @@ import rule from "../../../src/rules/async-methods";
 
 test("async-methods", () => {
   const files = {
-    good: path.resolve(__dirname, "async-methods.good.tsx"),
-    wrong: path.resolve(__dirname, "async-methods.wrong.tsx"),
+    good: path.resolve(import.meta.dirname, "async-methods.good.tsx"),
+    wrong: path.resolve(import.meta.dirname, "async-methods.wrong.tsx"),
   };
   const validCode = fs.readFileSync(files.good, "utf8");
 

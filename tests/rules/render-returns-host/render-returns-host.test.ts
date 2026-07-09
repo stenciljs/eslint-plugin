@@ -8,8 +8,8 @@ import rule from "../../../src/rules/render-returns-host";
 
 test("render-returns-host", () => {
   const files = {
-    good: path.resolve(__dirname, "render-returns-host.good.tsx"),
-    wrong: path.resolve(__dirname, "render-returns-host.wrong.tsx"),
+    good: path.resolve(import.meta.dirname, "render-returns-host.good.tsx"),
+    wrong: path.resolve(import.meta.dirname, "render-returns-host.wrong.tsx"),
   };
   ruleTester.run("render-returns-host", rule, {
     valid: [

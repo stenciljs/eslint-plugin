@@ -8,8 +8,8 @@ import rule from "../../../src/rules/props-must-be-readonly";
 
 test("props-must-be-readonly", () => {
   const files = {
-    good: path.resolve(__dirname, "props-must-be-readonly.good.tsx"),
-    wrong: path.resolve(__dirname, "props-must-be-readonly.wrong.tsx"),
+    good: path.resolve(import.meta.dirname, "props-must-be-readonly.good.tsx"),
+    wrong: path.resolve(import.meta.dirname, "props-must-be-readonly.wrong.tsx"),
   };
   const validCode = fs.readFileSync(files.good, "utf8");
 

@@ -8,11 +8,11 @@ import rule from "../../../src/rules/strict-mutable";
 
 test("strict-mutable", () => {
   const files = {
-    good: path.resolve(__dirname, "strict-mutable.good.tsx"),
-    wrong: path.resolve(__dirname, "strict-mutable.wrong.tsx"),
-    nonComponent: path.resolve(__dirname, "strict-mutable.non-component.tsx"),
-    inlineValid: path.resolve(__dirname, "strict-mutable.inline-valid.tsx"),
-    missingAssignment: path.resolve(__dirname, "strict-mutable.missing-assignment.tsx"),
+    good: path.resolve(import.meta.dirname, "strict-mutable.good.tsx"),
+    wrong: path.resolve(import.meta.dirname, "strict-mutable.wrong.tsx"),
+    nonComponent: path.resolve(import.meta.dirname, "strict-mutable.non-component.tsx"),
+    inlineValid: path.resolve(import.meta.dirname, "strict-mutable.inline-valid.tsx"),
+    missingAssignment: path.resolve(import.meta.dirname, "strict-mutable.missing-assignment.tsx"),
   };
   ruleTester.run("strict-mutable", rule, {
     valid: [

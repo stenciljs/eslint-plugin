@@ -8,8 +8,8 @@ import { ruleTester } from "../rule-tester";
 
 test("methods-must-be-public", () => {
   const files = {
-    good: path.resolve(__dirname, "methods-must-be-public.good.tsx"),
-    wrong: path.resolve(__dirname, "methods-must-be-public.wrong.tsx"),
+    good: path.resolve(import.meta.dirname, "methods-must-be-public.good.tsx"),
+    wrong: path.resolve(import.meta.dirname, "methods-must-be-public.wrong.tsx"),
   };
   ruleTester.run("methods-must-be-public", rule, {
     valid: [

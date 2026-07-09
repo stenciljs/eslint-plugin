@@ -8,9 +8,9 @@ import rule from "../../../src/rules/own-props-must-be-private";
 
 test("stencil rules", () => {
   const files = {
-    good: path.resolve(__dirname, "own-props-must-be-private.good.tsx"),
-    wrong: path.resolve(__dirname, "own-props-must-be-private.wrong.tsx"),
-    output: path.resolve(__dirname, "own-props-must-be-private.output.tsx"),
+    good: path.resolve(import.meta.dirname, "own-props-must-be-private.good.tsx"),
+    wrong: path.resolve(import.meta.dirname, "own-props-must-be-private.wrong.tsx"),
+    output: path.resolve(import.meta.dirname, "own-props-must-be-private.output.tsx"),
   };
   ruleTester.run("own-props-must-be-private", rule, {
     valid: [

@@ -8,14 +8,20 @@ import rule from "../../../src/rules/single-export";
 
 test("single-export", () => {
   const files = {
-    good: path.resolve(__dirname, "single-export.good.tsx"),
-    wrong: path.resolve(__dirname, "single-export.wrong.tsx"),
-    typeOnlyExports: path.resolve(__dirname, "single-export.type-only-exports.tsx"),
-    localInterfaceSpecifier: path.resolve(__dirname, "single-export.local-interface-specifier.tsx"),
-    extraValueExport: path.resolve(__dirname, "single-export.extra-value-export.tsx"),
-    extraDefaultExport: path.resolve(__dirname, "single-export.extra-default-export.tsx"),
-    exportAll: path.resolve(__dirname, "single-export.export-all.tsx"),
-    noComponent: path.resolve(__dirname, "single-export.no-component.tsx"),
+    good: path.resolve(import.meta.dirname, "single-export.good.tsx"),
+    wrong: path.resolve(import.meta.dirname, "single-export.wrong.tsx"),
+    typeOnlyExports: path.resolve(import.meta.dirname, "single-export.type-only-exports.tsx"),
+    localInterfaceSpecifier: path.resolve(
+      import.meta.dirname,
+      "single-export.local-interface-specifier.tsx",
+    ),
+    extraValueExport: path.resolve(import.meta.dirname, "single-export.extra-value-export.tsx"),
+    extraDefaultExport: path.resolve(
+      import.meta.dirname,
+      "single-export.extra-default-export.tsx",
+    ),
+    exportAll: path.resolve(import.meta.dirname, "single-export.export-all.tsx"),
+    noComponent: path.resolve(import.meta.dirname, "single-export.no-component.tsx"),
   };
   ruleTester.run("single-export", rule, {
     valid: [

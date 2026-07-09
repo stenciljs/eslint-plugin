@@ -14,8 +14,8 @@ test("strict-boolean-conditions", () => {
   ruleTester.run("strict-boolean-conditions", rule, {
     valid: [
       {
-        code: fs.readFileSync(path.resolve(__dirname, "valid-with-options.ts"), "utf8"),
-        filename: path.resolve(__dirname, "valid-with-options.ts"),
+        code: fs.readFileSync(path.resolve(import.meta.dirname, "valid-with-options.ts"), "utf8"),
+        filename: path.resolve(import.meta.dirname, "valid-with-options.ts"),
         options: [
           [
             "allow-string",
@@ -29,25 +29,25 @@ test("strict-boolean-conditions", () => {
         ],
       },
       {
-        code: fs.readFileSync(path.resolve(__dirname, "valid-default.ts"), "utf8"),
-        filename: path.resolve(__dirname, "valid-default.ts"),
+        code: fs.readFileSync(path.resolve(import.meta.dirname, "valid-default.ts"), "utf8"),
+        filename: path.resolve(import.meta.dirname, "valid-default.ts"),
       },
     ],
     invalid: [
       {
-        code: fs.readFileSync(path.resolve(__dirname, "invalid-basic.ts"), "utf8"),
-        filename: path.resolve(__dirname, "invalid-basic.ts"),
+        code: fs.readFileSync(path.resolve(import.meta.dirname, "invalid-basic.ts"), "utf8"),
+        filename: path.resolve(import.meta.dirname, "invalid-basic.ts"),
         errors: errors(4),
       },
       {
-        code: fs.readFileSync(path.resolve(__dirname, "invalid-unions.ts"), "utf8"),
-        filename: path.resolve(__dirname, "invalid-unions.ts"),
+        code: fs.readFileSync(path.resolve(import.meta.dirname, "invalid-unions.ts"), "utf8"),
+        filename: path.resolve(import.meta.dirname, "invalid-unions.ts"),
         options: [[]],
         errors: errors(2),
       },
       {
-        code: fs.readFileSync(path.resolve(__dirname, "invalid-mixed.ts"), "utf8"),
-        filename: path.resolve(__dirname, "invalid-mixed.ts"),
+        code: fs.readFileSync(path.resolve(import.meta.dirname, "invalid-mixed.ts"), "utf8"),
+        filename: path.resolve(import.meta.dirname, "invalid-mixed.ts"),
         errors: errors(4),
       },
     ],

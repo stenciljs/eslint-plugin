@@ -8,8 +8,8 @@ import rule from "../../../src/rules/required-prefix";
 
 test("required-prefix", () => {
   const files = {
-    good: path.resolve(__dirname, "required-prefix.good.tsx"),
-    wrong: path.resolve(__dirname, "required-prefix.wrong.tsx"),
+    good: path.resolve(import.meta.dirname, "required-prefix.good.tsx"),
+    wrong: path.resolve(import.meta.dirname, "required-prefix.wrong.tsx"),
   };
   const options = [["app-", "me-"]];
   ruleTester.run("required-prefix", rule, {
