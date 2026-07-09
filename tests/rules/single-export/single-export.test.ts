@@ -16,10 +16,7 @@ test("single-export", () => {
       "single-export.local-interface-specifier.tsx",
     ),
     extraValueExport: path.resolve(import.meta.dirname, "single-export.extra-value-export.tsx"),
-    extraDefaultExport: path.resolve(
-      import.meta.dirname,
-      "single-export.extra-default-export.tsx",
-    ),
+    extraDefaultExport: path.resolve(import.meta.dirname, "single-export.extra-default-export.tsx"),
     exportAll: path.resolve(import.meta.dirname, "single-export.export-all.tsx"),
     noComponent: path.resolve(import.meta.dirname, "single-export.no-component.tsx"),
   };

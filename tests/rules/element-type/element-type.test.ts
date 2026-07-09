@@ -11,7 +11,10 @@ test("element-type", () => {
     good: path.resolve(import.meta.dirname, "element-type.good.tsx"),
     wrong: path.resolve(import.meta.dirname, "element-type.wrong.tsx"),
     explicitAny: path.resolve(import.meta.dirname, "element-type.explicit-any.tsx"),
-    missingTypeAnnotation: path.resolve(import.meta.dirname, "element-type.missing-type-annotation.tsx"),
+    missingTypeAnnotation: path.resolve(
+      import.meta.dirname,
+      "element-type.missing-type-annotation.tsx",
+    ),
   };
   const validCode = fs.readFileSync(files.good, "utf8");
 
