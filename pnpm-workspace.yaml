@@ -1,2 +1,4 @@
 packages:
   - tests/wizard-playground
+allowBuilds:
+  "@parcel/watcher": true

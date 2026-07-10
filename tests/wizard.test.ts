@@ -4,9 +4,10 @@ vi.mock("node:fs/promises", () => ({
   access: vi.fn(),
   readFile: vi.fn(),
   writeFile: vi.fn(),
+  rm: vi.fn(),
 }));
 
-import { access, readFile, writeFile } from "node:fs/promises";
+import { access, readFile, rm, writeFile } from "node:fs/promises";
 import configs from "../src/configs";
 import { wizard } from "../src/wizard";
 
@@ -34,11 +35,25 @@ function fakeContext(prompts: ReturnType<typeof fakePrompts>) {
   } as any;
 }
 
+// By default neither config file exists - individual tests override via mockImplementation
+// for the "reconfigure" scenarios.
+function mockNoExistingConfig() {
+  vi.mocked(access).mockRejectedValue(new Error("missing"));
+}
+
+function mockExistingConfig(...paths: string[]) {
+  vi.mocked(access).mockImplementation(async (path) => {
+    if (paths.includes(path as string)) return undefined;
+    throw new Error("missing");
+  });
+}
+
 describe("eslint plugin wizard", () => {
   beforeEach(() => {
     vi.mocked(access).mockReset();
     vi.mocked(readFile).mockReset();
     vi.mocked(writeFile).mockReset();
+    vi.mocked(rm).mockReset();
     vi.mocked(readFile).mockResolvedValue('{"scripts":{}}');
   });
 
@@ -50,7 +65,7 @@ describe("eslint plugin wizard", () => {
     const exitSpy = vi.spyOn(process, "exit").mockImplementation(() => undefined as never);
     const select = vi.fn().mockResolvedValueOnce(CANCEL);
     const prompts = fakePrompts({ select });
-    vi.mocked(access).mockRejectedValue(new Error("missing"));
+    mockNoExistingConfig();
 
     await wizard.init!.run(fakeContext(prompts));
 
@@ -59,27 +74,54 @@ describe("eslint plugin wizard", () => {
     exitSpy.mockRestore();
   });
 
-  test("declining to overwrite an existing config skips setup", async () => {
-    const select = vi.fn().mockResolvedValueOnce("oxlint");
+  test("declining to reconfigure an existing setup leaves it unchanged", async () => {
+    const select = vi.fn();
     const confirm = vi.fn().mockResolvedValueOnce(false);
     const prompts = fakePrompts({ select, confirm });
     const ctx = fakeContext(prompts);
-    vi.mocked(access).mockResolvedValue(undefined);
+    mockExistingConfig("/proj/.oxlintrc.json");
 
     await wizard.init!.run(ctx);
 
     expect(confirm).toHaveBeenCalledWith(
       expect.objectContaining({ message: expect.stringContaining(".oxlintrc.json") }),
     );
+    expect(select).not.toHaveBeenCalled();
+    expect(vi.mocked(rm)).not.toHaveBeenCalled();
     expect(ctx.nypm.addDependency).not.toHaveBeenCalled();
     expect(vi.mocked(writeFile)).not.toHaveBeenCalled();
+  });
+
+  test("reconfiguring removes a stale config from the other runner and force-overwrites scripts", async () => {
+    vi.mocked(readFile).mockResolvedValue(
+      '{"scripts":{"lint":"custom-lint","lint:fix":"custom-fix"}}',
+    );
+    const select = vi.fn().mockResolvedValueOnce("oxlint");
+    const confirm = vi.fn().mockResolvedValueOnce(true);
+    const prompts = fakePrompts({ select, confirm });
+    const ctx = fakeContext(prompts);
+    mockExistingConfig("/proj/eslint.config.js");
+
+    await wizard.init!.run(ctx);
+
+    expect(vi.mocked(rm)).toHaveBeenCalledWith("/proj/eslint.config.js");
+    expect(ctx.nypm.addDependency).toHaveBeenCalledWith(["oxlint"], { cwd: "/proj", dev: true });
+
+    const [configPath] = vi.mocked(writeFile).mock.calls[0];
+    expect(configPath).toBe("/proj/.oxlintrc.json");
+
+    const [, pkgContent] = vi.mocked(writeFile).mock.calls[1];
+    expect(JSON.parse(pkgContent as string).scripts).toEqual({
+      lint: "oxlint .",
+      "lint:fix": "oxlint . --fix",
+    });
   });
 
   test("oxlint runner installs oxlint and writes .oxlintrc.json with only stencil rules", async () => {
     const select = vi.fn().mockResolvedValueOnce("oxlint");
     const prompts = fakePrompts({ select });
     const ctx = fakeContext(prompts);
-    vi.mocked(access).mockRejectedValue(new Error("missing"));
+    mockNoExistingConfig();
 
     await wizard.init!.run(ctx);
 
@@ -88,7 +130,7 @@ describe("eslint plugin wizard", () => {
     const [configPath, configContent] = vi.mocked(writeFile).mock.calls[0];
     expect(configPath).toBe("/proj/.oxlintrc.json");
     const written = JSON.parse(configContent as string);
-    expect(written.jsPlugins).toEqual(["@stencil/eslint-plugin"]);
+    expect(written.jsPlugins).toEqual([{ name: "stencil", specifier: "@stencil/eslint-plugin" }]);
     expect(written.rules).toEqual(configs.oxlint);
     expect(Object.keys(written.rules).every((name) => name.startsWith("stencil/"))).toBe(true);
 
@@ -104,7 +146,7 @@ describe("eslint plugin wizard", () => {
     const select = vi.fn().mockResolvedValueOnce("eslint").mockResolvedValueOnce("strict");
     const prompts = fakePrompts({ select });
     const ctx = fakeContext(prompts);
-    vi.mocked(access).mockRejectedValue(new Error("missing"));
+    mockNoExistingConfig();
 
     await wizard.init!.run(ctx);
 
@@ -129,12 +171,12 @@ describe("eslint plugin wizard", () => {
     });
   });
 
-  test("does not clobber pre-existing lint scripts", async () => {
+  test("first-time setup does not clobber pre-existing unrelated lint scripts", async () => {
     vi.mocked(readFile).mockResolvedValue('{"scripts":{"lint":"custom-lint"}}');
     const select = vi.fn().mockResolvedValueOnce("oxlint");
     const prompts = fakePrompts({ select });
     const ctx = fakeContext(prompts);
-    vi.mocked(access).mockRejectedValue(new Error("missing"));
+    mockNoExistingConfig();
 
     await wizard.init!.run(ctx);
 

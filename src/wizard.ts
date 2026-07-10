@@ -1,11 +1,14 @@
 import type { StencilWizardPlugin, WizardContext } from "@stencil/cli";
-import { access, readFile, writeFile } from "node:fs/promises";
+import { access, readFile, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
 import configs from "./configs";
 
 type Runner = "eslint" | "oxlint";
 type Preset = "recommended" | "strict";
+
+const ESLINT_CONFIG_FILE = "eslint.config.js";
+const OXLINT_CONFIG_FILE = ".oxlintrc.json";
 
 async function fileExists(path: string): Promise<boolean> {
   try {
@@ -14,10 +17,6 @@ async function fileExists(path: string): Promise<boolean> {
   } catch {
     return false;
   }
-}
-
-function configFileName(runner: Runner): string {
-  return runner === "eslint" ? "eslint.config.js" : ".oxlintrc.json";
 }
 
 function eslintConfigContent(preset: Preset): string {
@@ -32,7 +31,10 @@ function oxlintConfigContent(): string {
     JSON.stringify(
       {
         $schema: "./node_modules/oxlint/configuration_schema.json",
-        jsPlugins: ["@stencil/eslint-plugin"],
+        // Aliased to "stencil" - `@stencil/eslint-plugin` has no `meta.name`, so without an
+        // alias oxlint derives the plugin name from the package name instead (`@stencil`),
+        // which wouldn't match the `stencil/*` rule keys below.
+        jsPlugins: [{ name: "stencil", specifier: "@stencil/eslint-plugin" }],
         rules: configs.oxlint,
       },
       null,
@@ -41,13 +43,25 @@ function oxlintConfigContent(): string {
   );
 }
 
-async function updatePackageJsonScripts(rootDir: string, runner: Runner): Promise<void> {
+async function updatePackageJsonScripts(
+  rootDir: string,
+  runner: Runner,
+  force: boolean,
+): Promise<void> {
   const pkgPath = join(rootDir, "package.json");
   const pkg = JSON.parse(await readFile(pkgPath, "utf8")) as Record<string, any>;
 
   pkg["scripts"] ??= {};
-  pkg["scripts"]["lint"] ??= runner === "eslint" ? "eslint ." : "oxlint .";
-  pkg["scripts"]["lint:fix"] ??= runner === "eslint" ? "eslint . --fix" : "oxlint . --fix";
+  const lint = runner === "eslint" ? "eslint ." : "oxlint .";
+  const lintFix = runner === "eslint" ? "eslint . --fix" : "oxlint . --fix";
+
+  if (force) {
+    pkg["scripts"]["lint"] = lint;
+    pkg["scripts"]["lint:fix"] = lintFix;
+  } else {
+    pkg["scripts"]["lint"] ??= lint;
+    pkg["scripts"]["lint:fix"] ??= lintFix;
+  }
 
   await writeFile(pkgPath, JSON.stringify(pkg, null, 2) + "\n", "utf8");
 }
@@ -64,36 +78,53 @@ export const wizard: StencilWizardPlugin = {
 
       intro("@stencil/eslint-plugin - Stencil-specific lint rules");
 
+      const eslintConfigPath = join(rootDir, ESLINT_CONFIG_FILE);
+      const oxlintConfigPath = join(rootDir, OXLINT_CONFIG_FILE);
+      const [hasEslintConfig, hasOxlintConfig] = await Promise.all([
+        fileExists(eslintConfigPath),
+        fileExists(oxlintConfigPath),
+      ]);
+      const isReconfigure = hasEslintConfig || hasOxlintConfig;
+
+      if (isReconfigure) {
+        const existing = [
+          hasEslintConfig && ESLINT_CONFIG_FILE,
+          hasOxlintConfig && OXLINT_CONFIG_FILE,
+        ]
+          .filter((name): name is string => Boolean(name))
+          .join(" and ");
+        const reconfigure = await confirm({
+          message: `Lint is already configured (${existing}). Reconfigure?`,
+          initialValue: false,
+        });
+        if (isCancel(reconfigure) || !reconfigure) {
+          cancel("Lint setup left unchanged.");
+          return;
+        }
+        // Clear out both, regardless of which runner is picked next - otherwise switching
+        // runners leaves the old runner's config behind alongside the new one.
+        if (hasEslintConfig) await rm(eslintConfigPath);
+        if (hasOxlintConfig) await rm(oxlintConfigPath);
+      }
+
       const runner = await select({
         message: "Which linter do you want to run Stencil rules with?",
         options: [
           {
             value: "oxlint",
             label: "oxlint",
-            hint: "fast, Rust-based - a few type-aware rules run type-blind (JS plugins are alpha)",
+            hint: "fast, Rust-based - a few type-aware rules cannot run at-present",
           },
           {
             value: "eslint",
             label: "ESLint",
-            hint: "full rule coverage, including type-aware rules",
+            hint: "slower, JS-based - full rule coverage, including type-aware rules",
           },
         ],
       });
       if (isCancel(runner)) {
         cancel("Setup cancelled.");
         process.exit(0);
-      }
-
-      const configPath = join(rootDir, configFileName(runner as Runner));
-      if (await fileExists(configPath)) {
-        const overwrite = await confirm({
-          message: `${configFileName(runner as Runner)} already exists. Overwrite it?`,
-          initialValue: false,
-        });
-        if (isCancel(overwrite) || !overwrite) {
-          cancel("Skipping lint setup - existing config kept.");
-          return;
-        }
       }
 
       let preset: Preset = "recommended";
@@ -127,12 +158,13 @@ export const wizard: StencilWizardPlugin = {
       await nypm.addDependency(deps, { cwd: rootDir, dev: true });
       s.stop("Dependencies installed");
 
+      const configPath = runner === "eslint" ? eslintConfigPath : oxlintConfigPath;
       await writeFile(
         configPath,
         runner === "eslint" ? eslintConfigContent(preset) : oxlintConfigContent(),
         "utf8",
       );
-      await updatePackageJsonScripts(rootDir, runner as Runner);
+      await updatePackageJsonScripts(rootDir, runner as Runner, isReconfigure);
 
       outro(`${runner === "eslint" ? "ESLint" : "oxlint"} configured with Stencil rules`);
     },
