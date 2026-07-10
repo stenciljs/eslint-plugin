@@ -1,3 +1,4 @@
+import { join } from "node:path";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
 vi.mock("node:fs/promises", () => ({
@@ -12,6 +13,10 @@ import configs from "../src/configs";
 import { wizard } from "../src/wizard";
 
 const CANCEL = Symbol("cancel");
+const ROOT = "/proj";
+const ESLINT_CONFIG_PATH = join(ROOT, "eslint.config.js");
+const OXLINT_CONFIG_PATH = join(ROOT, ".oxlintrc.json");
+const PKG_PATH = join(ROOT, "package.json");
 
 function fakePrompts(overrides: { select?: unknown; confirm?: unknown } = {}) {
   return {
@@ -28,7 +33,7 @@ function fakePrompts(overrides: { select?: unknown; confirm?: unknown } = {}) {
 
 function fakeContext(prompts: ReturnType<typeof fakePrompts>) {
   return {
-    config: { rootDir: "/proj" },
+    config: { rootDir: ROOT },
     isNewProject: false,
     prompts,
     nypm: { addDependency: vi.fn() },
@@ -79,7 +84,7 @@ describe("eslint plugin wizard", () => {
     const confirm = vi.fn().mockResolvedValueOnce(false);
     const prompts = fakePrompts({ select, confirm });
     const ctx = fakeContext(prompts);
-    mockExistingConfig("/proj/.oxlintrc.json");
+    mockExistingConfig(OXLINT_CONFIG_PATH);
 
     await wizard.init!.run(ctx);
 
@@ -100,15 +105,15 @@ describe("eslint plugin wizard", () => {
     const confirm = vi.fn().mockResolvedValueOnce(true);
     const prompts = fakePrompts({ select, confirm });
     const ctx = fakeContext(prompts);
-    mockExistingConfig("/proj/eslint.config.js");
+    mockExistingConfig(ESLINT_CONFIG_PATH);
 
     await wizard.init!.run(ctx);
 
-    expect(vi.mocked(rm)).toHaveBeenCalledWith("/proj/eslint.config.js");
-    expect(ctx.nypm.addDependency).toHaveBeenCalledWith(["oxlint"], { cwd: "/proj", dev: true });
+    expect(vi.mocked(rm)).toHaveBeenCalledWith(ESLINT_CONFIG_PATH);
+    expect(ctx.nypm.addDependency).toHaveBeenCalledWith(["oxlint"], { cwd: ROOT, dev: true });
 
     const [configPath] = vi.mocked(writeFile).mock.calls[0];
-    expect(configPath).toBe("/proj/.oxlintrc.json");
+    expect(configPath).toBe(OXLINT_CONFIG_PATH);
 
     const [, pkgContent] = vi.mocked(writeFile).mock.calls[1];
     expect(JSON.parse(pkgContent as string).scripts).toEqual({
@@ -125,17 +130,17 @@ describe("eslint plugin wizard", () => {
 
     await wizard.init!.run(ctx);
 
-    expect(ctx.nypm.addDependency).toHaveBeenCalledWith(["oxlint"], { cwd: "/proj", dev: true });
+    expect(ctx.nypm.addDependency).toHaveBeenCalledWith(["oxlint"], { cwd: ROOT, dev: true });
 
     const [configPath, configContent] = vi.mocked(writeFile).mock.calls[0];
-    expect(configPath).toBe("/proj/.oxlintrc.json");
+    expect(configPath).toBe(OXLINT_CONFIG_PATH);
     const written = JSON.parse(configContent as string);
     expect(written.jsPlugins).toEqual([{ name: "stencil", specifier: "@stencil/eslint-plugin" }]);
     expect(written.rules).toEqual(configs.oxlint);
     expect(Object.keys(written.rules).every((name) => name.startsWith("stencil/"))).toBe(true);
 
     const [pkgPath, pkgContent] = vi.mocked(writeFile).mock.calls[1];
-    expect(pkgPath).toBe("/proj/package.json");
+    expect(pkgPath).toBe(PKG_PATH);
     expect(JSON.parse(pkgContent as string).scripts).toEqual({
       lint: "oxlint .",
       "lint:fix": "oxlint . --fix",
@@ -157,11 +162,11 @@ describe("eslint plugin wizard", () => {
         "@typescript-eslint/eslint-plugin",
         "eslint-plugin-react",
       ],
-      { cwd: "/proj", dev: true },
+      { cwd: ROOT, dev: true },
     );
 
     const [configPath, configContent] = vi.mocked(writeFile).mock.calls[0];
-    expect(configPath).toBe("/proj/eslint.config.js");
+    expect(configPath).toBe(ESLINT_CONFIG_PATH);
     expect(configContent).toContain("stencil.configs.flat.strict");
 
     const [, pkgContent] = vi.mocked(writeFile).mock.calls[1];
