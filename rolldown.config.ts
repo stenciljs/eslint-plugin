@@ -8,9 +8,14 @@ const external = [
   "jsdom",
   "eslint-utils",
   "eslint-plugin-react",
+  "@stencil/cli",
+  /^node:/,
 ];
 
-const input = "src/index.ts";
+const input = {
+  index: "src/index.ts",
+  wizard: "src/wizard.ts",
+};
 const sourcemap = true;
 
 export default defineConfig({
@@ -19,6 +24,7 @@ export default defineConfig({
     dir: "dist",
     format: "esm",
     sourcemap,
+    entryFileNames: "[name].js",
   },
   external,
   plugins: [dts({ sourcemap: true })],

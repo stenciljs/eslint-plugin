@@ -1,0 +1,15 @@
+{
+  "name": "wizard-playground",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "init": "STENCIL_WIZARD_DEV=../../dist/wizard.js stencil init",
+    "add": "STENCIL_WIZARD_DEV=../../dist/wizard.js stencil init"
+  },
+  "devDependencies": {
+    "@stencil/cli": "^5.0.0 || >=5.0.0-alpha.19 <5.0.0-next.0",
+    "@stencil/core": "^5.0.0 || >=5.0.0-alpha.19 <5.0.0-next.0",
+    "@stencil/eslint-plugin": "workspace:*"
+  }
+}

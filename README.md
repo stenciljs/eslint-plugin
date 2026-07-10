@@ -44,14 +44,14 @@ module.exports = [
 ];
 ```
 
-By default, ESLint will ignore your `node_modules/` directory. Consider adding a `.eslintignore` file at the root of
-your project with any output target directories to avoid false positive errors from ESLint.
+Exclude
+directories created by the Stencil compilation process with an `ignores` entry instead:
 
-```
-# place any directories created by the Stencil compilation process here
-dist
-loader
-www
+```js
+// eslint.config.js
+import stencil from "@stencil/eslint-plugin";
+
+export default [{ ignores: ["dist", "loader", "www"] }, stencil.configs.flat.recommended];
 ```
 
 Lint all your project:
@@ -60,7 +60,39 @@ Lint all your project:
 npm run lint
 ```
 
+### Configuration (oxlint)
+
+This plugin can also run under [oxlint](https://oxc.rs/docs/guide/usage/linter.html) via its `jsPlugins`
+support, instead of ESLint:
+
+```bash
+npm i --save-dev oxlint @stencil/eslint-plugin
+```
+
+```json
+// .oxlintrc.json
+{
+  "jsPlugins": [{ "name": "stencil", "specifier": "@stencil/eslint-plugin" }],
+  "rules": {
+    "stencil/async-methods": "error",
+    "stencil/methods-must-be-public": "error"
+  }
+}
+```
+
+TypeScript type information (e.g. type-aware checks in `async-methods`) run in a degraded, type-blind
+mode under oxlint, since oxlint doesn't do type resolution.
+
+```sh
+npx oxlint .
+```
+
 ### Configuration (legacy: .eslintrc*)
+
+Only works on ESLint 8, or ESLint 9 with the `ESLINT_USE_FLAT_CONFIG=false` environment variable set -
+ESLint no longer reads `.eslintrc.*` files by default, and that escape hatch is removed entirely in
+ESLint 10. Use the [flat config](#configuration-new-eslintconfig) above unless you have a specific
+reason not to.
 
 `.eslintrc.json` configuration file:
 
