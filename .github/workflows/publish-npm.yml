@@ -51,6 +51,10 @@ on:
         required: false
         type: string
         default: "."
+    outputs:
+      resolved-version:
+        description: "The exact semver version that was published."
+        value: ${{ jobs.publish.outputs.resolved-version }}
 
 permissions:
   contents: read
@@ -59,6 +63,8 @@ permissions:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    outputs:
+      resolved-version: ${{ steps.set-version.outputs.version }}
     steps:
       - name: 📥 Checkout Code
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -81,10 +87,6 @@ jobs:
           registry-url: ${{ inputs.registry-url }}
           scope: ${{ inputs.scope }}
 
-      - name: 🔄 Ensure Latest npm
-        run: npm install -g npm@latest
-        shell: bash
-
       - name: 📦 Install Dependencies
         if: ${{ inputs.install-command != '' }}
         run: ${{ inputs.install-command }}
@@ -98,7 +100,10 @@ jobs:
         working-directory: ${{ inputs.build-working-directory }}
 
       - name: 🏷️ Set Version
-        run: npm version --no-git-tag-version --allow-same-version ${{ inputs.version }}
+        id: set-version
+        run: |
+          npm version --no-git-tag-version --allow-same-version ${{ inputs.version }}
+          echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
         shell: bash
         working-directory: ${{ inputs.package-directory }}
 
