@@ -9,7 +9,7 @@ importers:
   .:
     dependencies:
       '@stencil/core':
-        specifier: ^4.0.0 || ^5.0.0 || >=5.0.0-alpha.19 <5.0.0-next.0
+        specifier: ^4.0.0 || ^5.0.0-alpha.19
         version: 5.0.0-alpha.19
       eslint-utils:
         specifier: ^3.0.0
@@ -22,7 +22,7 @@ importers:
         version: 3.21.0(typescript@6.0.3)
     devDependencies:
       '@stencil/cli':
-        specifier: ^5.0.0 || >=5.0.0-alpha.19 <5.0.0-next.0
+        specifier: ^5.0.0-alpha.19
         version: 5.0.0-alpha.19(@stencil/core@5.0.0-alpha.19)
       '@types/eslint':
         specifier: 9.6.1
@@ -76,10 +76,10 @@ importers:
   tests/wizard-playground:
     devDependencies:
       '@stencil/cli':
-        specifier: ^5.0.0 || >=5.0.0-alpha.19 <5.0.0-next.0
+        specifier: ^5.0.0-alpha.19
         version: 5.0.0-alpha.19(@stencil/core@5.0.0-alpha.19)
       '@stencil/core':
-        specifier: ^5.0.0 || >=5.0.0-alpha.19 <5.0.0-next.0
+        specifier: ^5.0.0-alpha.19
         version: 5.0.0-alpha.19
       '@stencil/eslint-plugin':
         specifier: workspace:*
