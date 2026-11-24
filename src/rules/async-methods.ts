@@ -30,28 +30,27 @@ const rule: Rule.RuleModule = {
           return;
         }
         const node = decoratorNode.parent;
+        // an async method always returns a Promise, even if its type can't be resolved
+        if (node.value.async && !node.value.generator) {
+          return;
+        }
         const method = parserServices.esTreeNodeToTSNodeMap.get(node);
         const signature = typeChecker.getSignatureFromDeclaration(method);
         const returnType = typeChecker.getReturnTypeOfSignature(signature!);
         if (!isThenableType(typeChecker, method, returnType)) {
-          const originalNode = parserServices.esTreeNodeToTSNodeMap.get(node) as ts.Node;
-          const text = String(originalNode.getFullText());
           context.report({
             node: node.key,
             message: `External @Method() ${node.key.name}() must return a Promise. Consider prefixing the method with async, such as @Method() async ${node.key.name}().`,
             fix(fixer) {
-              const result = text
-                // a newline + whitespace preceding `@Method` may be captured, remove it
-                .trimLeft()
-                // capture the number of following the decorator to know how far to indent the `async` method
-                .replace(/@Method\(\)\n(\s*)/, "@Method()\n$1async ")
-                // replace any inlined @Method decorators
-                .replace("@Method() ", "@Method() async")
-                // swap the order of the `async` and `public` keywords
-                .replace("async public", "public async")
-                // swap the order of the `async` and `private` keywords
-                .replace("async private", "private async");
-              return fixer.replaceText(node, result);
+              // adding `async` is not enough here, these have to be changed by hand
+              if (node.value.returnType || node.value.generator || node.kind !== "method") {
+                return null;
+              }
+              // a computed name starts at its opening bracket: `['name']`
+              const name = node.computed
+                ? context.sourceCode.getTokenBefore(node.key, (token) => token.value === "[")!
+                : node.key;
+              return fixer.insertTextBefore(name, "async ");
             },
           });
         }
