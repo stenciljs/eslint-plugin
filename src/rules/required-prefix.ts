@@ -28,7 +28,11 @@ const rule: Rule.RuleModule = {
         if (!component) {
           return;
         }
-        const [{ tag }] = parseDecorator(component);
+        const [opts] = parseDecorator(component);
+        if (!opts || !opts.tag) {
+          return;
+        }
+        const tag = opts.tag;
         const options = context.options[0];
         const match = options.some((t: string) => tag.startsWith(t));
 

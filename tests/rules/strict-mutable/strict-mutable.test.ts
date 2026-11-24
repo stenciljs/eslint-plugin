@@ -44,3 +44,30 @@ test("strict-mutable", () => {
     ],
   });
 });
+
+test("strict-mutable with options that are not static", () => {
+  const filename = path.resolve(import.meta.dirname, "strict-mutable.good.tsx");
+  const component = (body: string) =>
+    `@Component({ tag: 'sample-tag' }) export class SampleTag { ${body} }`;
+
+  ruleTester.run("strict-mutable", rule, {
+    valid: [
+      {
+        code: component(
+          "@Prop({ attribute: Attribute.test, mutable: true }) test = 1; set() { this.test = 2; }",
+        ),
+        filename,
+      },
+      { code: component("@Prop({ attribute: Attribute.test }) test = 1;"), filename },
+      { code: component("@Prop({ mutable: true, ...options }) test = 1;"), filename },
+      { code: component("@Prop(options) test = 1;"), filename },
+    ],
+    invalid: [
+      {
+        code: component("@Prop({ attribute: Attribute.test, mutable: true }) test = 1;"),
+        filename,
+        errors: 1,
+      },
+    ],
+  });
+});

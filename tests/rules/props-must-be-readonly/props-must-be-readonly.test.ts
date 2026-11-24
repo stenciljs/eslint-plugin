@@ -31,3 +31,34 @@ test("props-must-be-readonly", () => {
     ],
   });
 });
+
+test("props-must-be-readonly with options that are not static", () => {
+  const filename = path.resolve(import.meta.dirname, "props-must-be-readonly.good.tsx");
+  const component = (prop: string) =>
+    `@Component({ tag: 'sample-tag' }) export class SampleTag { ${prop} }`;
+
+  ruleTester.run("props-must-be-readonly", rule, {
+    valid: [
+      {
+        code: component("@Prop({ attribute: Attribute.test, mutable: true }) test = '';"),
+        filename,
+      },
+      { code: component("@Prop({ ...options, mutable: true }) test = '';"), filename },
+    ],
+    invalid: [
+      {
+        code: component("@Prop({ attribute: Attribute.test }) test = '';"),
+        output: component("@Prop({ attribute: Attribute.test }) readonly test = '';"),
+        filename,
+        errors: 1,
+      },
+      {
+        // the spread may override `mutable`
+        code: component("@Prop({ mutable: true, ...options }) test = '';"),
+        output: component("@Prop({ mutable: true, ...options }) readonly test = '';"),
+        filename,
+        errors: 1,
+      },
+    ],
+  });
+});
