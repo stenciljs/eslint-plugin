@@ -48,3 +48,21 @@ test("element-type", () => {
     ],
   });
 });
+
+test("element-type with options that are not static", () => {
+  const filename = path.resolve(import.meta.dirname, "element-type.good.tsx");
+  const component = (type: string) =>
+    `@Component({ tag: 'sample-tag', styles: CSS }) export class SampleTag { @Element() element!: ${type}; }`;
+
+  ruleTester.run("element-type", rule, {
+    valid: [{ code: component("HTMLSampleTagElement"), filename }],
+    invalid: [
+      {
+        code: component("HTMLElement"),
+        output: component("HTMLSampleTagElement"),
+        filename,
+        errors: 1,
+      },
+    ],
+  });
+});

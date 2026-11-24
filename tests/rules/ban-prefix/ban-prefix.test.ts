@@ -31,3 +31,23 @@ test("ban-prefix", () => {
     ],
   });
 });
+
+test("ban-prefix with options that are not static", () => {
+  const filename = path.resolve(import.meta.dirname, "ban-prefix.good.tsx");
+
+  ruleTester.run("ban-prefix", rule, {
+    valid: [
+      {
+        code: `@Component({ tag: 'sample-tag', styles: CSS }) export class SampleTag {}`,
+        filename,
+      },
+    ],
+    invalid: [
+      {
+        code: `@Component({ tag: 'stencil-tag', styles: CSS }) export class SampleTag {}`,
+        filename,
+        errors: 1,
+      },
+    ],
+  });
+});

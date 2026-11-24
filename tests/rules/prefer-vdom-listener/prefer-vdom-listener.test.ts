@@ -28,3 +28,17 @@ test("prefer-vdom-listener", () => {
     ],
   });
 });
+
+test("prefer-vdom-listener with options that are not static", () => {
+  const filename = path.resolve(import.meta.dirname, "prefer-vdom-listener.good.tsx");
+
+  ruleTester.run("prefer-vdom-listener", rule, {
+    valid: [
+      {
+        code: `@Component({ tag: 'sample-tag' }) export class SampleTag { @Listen('click', { target: TARGET }) test() {} }`,
+        filename,
+      },
+    ],
+    invalid: [],
+  });
+});

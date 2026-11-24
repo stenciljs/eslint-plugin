@@ -31,3 +31,26 @@ test("class-pattern", () => {
     ],
   });
 });
+
+test("class-pattern with options that are not static", () => {
+  const filename = path.resolve(import.meta.dirname, "class-pattern.good.tsx");
+  const options = [{ pattern: "^Sample.*$" }];
+
+  ruleTester.run("class-pattern", rule, {
+    valid: [
+      {
+        code: `@Component({ tag: 'sample-tag', styles: CSS }) export class SampleTag {}`,
+        filename,
+        options,
+      },
+    ],
+    invalid: [
+      {
+        code: `@Component({ tag: 'sample-tag', styles: CSS }) export class Other {}`,
+        filename,
+        options,
+        errors: 1,
+      },
+    ],
+  });
+});

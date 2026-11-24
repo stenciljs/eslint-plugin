@@ -82,12 +82,32 @@ export function getDecorator(node: any, decoratorName?: string): any | any[] {
 
 export function parseDecorator(decorator: any) {
   if (decorator && decorator.expression && decorator.expression.type === "CallExpression") {
-    return decorator.expression.arguments.map((a: any) => {
-      const parsed = getStaticValue(a);
-      return parsed ? parsed.value : undefined;
-    });
+    return decorator.expression.arguments.map(parseArgument);
   }
   return [];
+}
+
+/**
+ * Returns the static value of an argument, or `undefined` if it has none.
+ *
+ * If an object literal can't be evaluated as a whole, it is read property by property:
+ * values that aren't static become `undefined`, and properties before a spread or
+ * computed key are left out, because they may be overridden.
+ */
+function parseArgument(node: any): any {
+  const parsed = getStaticValue(node);
+  if (parsed || node.type !== "ObjectExpression") {
+    return parsed?.value;
+  }
+  let result: Record<string, unknown> = {};
+  for (const property of node.properties) {
+    if (property.type === "Property" && !property.computed) {
+      result[property.key.name ?? property.key.value] = getStaticValue(property.value)?.value;
+    } else {
+      result = {};
+    }
+  }
+  return result;
 }
 
 export function decoratorName(dec: any): string {

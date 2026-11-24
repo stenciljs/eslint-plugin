@@ -23,7 +23,7 @@ const rule: Rule.RuleModule = {
         return;
       }
       const parsed = parseDecorator(node);
-      const mutable = (parsed && parsed.length && parsed[0].mutable) || false;
+      const mutable = parsed[0]?.mutable || false;
 
       if (mutable) {
         const varName = node.parent.key.name;
